@@ -5,7 +5,13 @@ import type { LoginFormData } from './types';
 export default function Login() {
   const [formData, setFormData] = useState<LoginFormData>({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+
+  const verifyFormData = (): boolean => {
+    const { email, password } = formData;
+    return email !== "" && password !== "";
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -13,6 +19,10 @@ export default function Login() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if(!verifyFormData()) {
+      setError("Por favor, completa todos los campos.");
+      return;
+    }
     // TODO: conectar con el backend para autenticacion
     navigate('/dashboard');
   };
@@ -52,7 +62,6 @@ export default function Login() {
                   id="email"
                   name="email"
                   type="email"
-                  required
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="correo@ejemplo.com"
@@ -77,7 +86,6 @@ export default function Login() {
                   id="password"
                   name="password"
                   type={showPassword ? 'text' : 'password'}
-                  required
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="••••••••"
@@ -104,6 +112,8 @@ export default function Login() {
                 </button>
               </div>
             </div>
+
+            {error && <p className="text-center text-red-500 text-sm mt-2 font-bold">{error}</p>}
 
             {/* Submit */}
             <button
