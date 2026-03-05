@@ -6,77 +6,80 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ProyectoClinica.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class TurnosDisponibilidad : Migration
+    public partial class EntidadesDMT : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "disponibilidadMedicos",
+                name: "DisponibilidadMedicos",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    MedicoId = table.Column<int>(type: "int", nullable: false),
                     DiaSemana = table.Column<int>(type: "int", nullable: false),
                     HoraInicio = table.Column<TimeSpan>(type: "time", nullable: false),
                     HoraFin = table.Column<TimeSpan>(type: "time", nullable: false),
-                    DuracionTurnoMinutos = table.Column<int>(type: "int", nullable: false),
-                    MedicoId = table.Column<int>(type: "int", nullable: true)
+                    DuracionTurnoMinutos = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_disponibilidadMedicos", x => x.Id);
+                    table.PrimaryKey("PK_DisponibilidadMedicos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_disponibilidadMedicos_Medicos_MedicoId",
+                        name: "FK_DisponibilidadMedicos_Medicos_MedicoId",
                         column: x => x.MedicoId,
                         principalTable: "Medicos",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "GestionTurnos",
+                name: "Turnos",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    MedicoId = table.Column<int>(type: "int", nullable: false),
+                    PacienteId = table.Column<int>(type: "int", nullable: false),
                     Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
                     HoraInicio = table.Column<TimeSpan>(type: "time", nullable: false),
                     HoraFin = table.Column<TimeSpan>(type: "time", nullable: false),
                     Estado = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Observaciones = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FechaCancelacion = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    MedicoId = table.Column<int>(type: "int", nullable: true),
-                    PacienteId = table.Column<int>(type: "int", nullable: true)
+                    FechaCancelacion = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GestionTurnos", x => x.Id);
+                    table.PrimaryKey("PK_Turnos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_GestionTurnos_Medicos_MedicoId",
+                        name: "FK_Turnos_Medicos_MedicoId",
                         column: x => x.MedicoId,
                         principalTable: "Medicos",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_GestionTurnos_Pacientes_PacienteId",
+                        name: "FK_Turnos_Pacientes_PacienteId",
                         column: x => x.PacienteId,
                         principalTable: "Pacientes",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_disponibilidadMedicos_MedicoId",
-                table: "disponibilidadMedicos",
+                name: "IX_DisponibilidadMedicos_MedicoId",
+                table: "DisponibilidadMedicos",
                 column: "MedicoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GestionTurnos_MedicoId",
-                table: "GestionTurnos",
+                name: "IX_Turnos_MedicoId",
+                table: "Turnos",
                 column: "MedicoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GestionTurnos_PacienteId",
-                table: "GestionTurnos",
+                name: "IX_Turnos_PacienteId",
+                table: "Turnos",
                 column: "PacienteId");
         }
 
@@ -84,10 +87,10 @@ namespace ProyectoClinica.Server.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "disponibilidadMedicos");
+                name: "DisponibilidadMedicos");
 
             migrationBuilder.DropTable(
-                name: "GestionTurnos");
+                name: "Turnos");
         }
     }
 }
