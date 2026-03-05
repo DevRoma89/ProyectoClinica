@@ -42,15 +42,45 @@ namespace ProyectoClinica.Server.Controllers
             return Ok(especialidad);
         }
 
-        [HttpPut]
-        public async Task<ActionResult> Put()
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Put(int id, [FromBody] Especialidad especialidad)
         {
-            return Ok();
+            if (id != especialidad.Id)
+            {
+                return BadRequest("El id de la especialidad no coincide");
+            }
+
+            if (String.IsNullOrEmpty(especialidad.Nombre))
+            {
+                return BadRequest("No puede actualizar una especialidad con nombre vacio");
+            }
+            if (String.IsNullOrEmpty(especialidad.Descripcion))
+            {
+                return BadRequest("No puede actualizar una especialidad con descripcion vacia");
+            }
+
+            var existe = await context.Especialidades.AnyAsync(e => e.Id == id);
+            if (!existe)
+            {
+                return NotFound();
+            }
+
+            context.Update(especialidad);
+            await context.SaveChangesAsync();
+            return Ok(especialidad);
         }
 
-        [HttpDelete]
-        public async Task<ActionResult> Delete()
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
         {
+            var especialidad = await context.Especialidades.FindAsync(id);
+            if (especialidad == null)
+            {
+                return NotFound();
+            }
+
+            context.Remove(especialidad);
+            await context.SaveChangesAsync();
             return Ok();
         }
     }
