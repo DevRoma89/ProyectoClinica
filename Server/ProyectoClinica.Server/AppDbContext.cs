@@ -22,5 +22,8 @@ namespace ProyectoClinica.Server
         public DbSet<DisponibilidadMedico> DisponibilidadMedicos { get; set; }
         public DbSet<Turno> Turnos { get; set; }
 
+        public DbSet<Consulta> Consultas { get; set; }
+        public DbSet<EstudioMedico> EstudiosMedicos { get; set; }
+
     }
 }
