@@ -19,6 +19,8 @@ namespace ProyectoClinica.Server
         public DbSet<HistoriaClinica> HistoriaClinicas { get; set;}
         public DbSet<AntecedenteMedico> AntecedenteMedicos { get; set;}
 
+        public DbSet<DisponibilidadMedico> disponibilidadMedicos { get; set; }
+        public DbSet<GestionTurno> GestionTurnos { get; set; }
 
     }
 }
