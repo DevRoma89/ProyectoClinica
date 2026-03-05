@@ -69,14 +69,14 @@ namespace ProyectoClinica.Server.Migrations
                     b.Property<TimeSpan>("HoraInicio")
                         .HasColumnType("time");
 
-                    b.Property<int?>("MedicoId")
+                    b.Property<int>("MedicoId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("MedicoId");
 
-                    b.ToTable("disponibilidadMedicos");
+                    b.ToTable("DisponibilidadMedicos");
                 });
 
             modelBuilder.Entity("ProyectoClinica.Shared.Entidades.Especialidad", b =>
@@ -96,50 +96,6 @@ namespace ProyectoClinica.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Especialidades");
-                });
-
-            modelBuilder.Entity("ProyectoClinica.Shared.Entidades.GestionTurno", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Estado")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Fecha")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("FechaCancelacion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("FechaCreacion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<TimeSpan>("HoraFin")
-                        .HasColumnType("time");
-
-                    b.Property<TimeSpan>("HoraInicio")
-                        .HasColumnType("time");
-
-                    b.Property<int?>("MedicoId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Observaciones")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("PacienteId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MedicoId");
-
-                    b.HasIndex("PacienteId");
-
-                    b.ToTable("GestionTurnos");
                 });
 
             modelBuilder.Entity("ProyectoClinica.Shared.Entidades.HistoriaClinica", b =>
@@ -248,6 +204,50 @@ namespace ProyectoClinica.Server.Migrations
                     b.ToTable("Pacientes");
                 });
 
+            modelBuilder.Entity("ProyectoClinica.Shared.Entidades.Turno", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Estado")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaCancelacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<TimeSpan>("HoraFin")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan>("HoraInicio")
+                        .HasColumnType("time");
+
+                    b.Property<int>("MedicoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Observaciones")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PacienteId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MedicoId");
+
+                    b.HasIndex("PacienteId");
+
+                    b.ToTable("Turnos");
+                });
+
             modelBuilder.Entity("ProyectoClinica.Shared.Entidades.AntecedenteMedico", b =>
                 {
                     b.HasOne("ProyectoClinica.Shared.Entidades.HistoriaClinica", "HistoriaClinica")
@@ -263,24 +263,11 @@ namespace ProyectoClinica.Server.Migrations
                 {
                     b.HasOne("ProyectoClinica.Shared.Entidades.Medico", "Medico")
                         .WithMany()
-                        .HasForeignKey("MedicoId");
+                        .HasForeignKey("MedicoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Medico");
-                });
-
-            modelBuilder.Entity("ProyectoClinica.Shared.Entidades.GestionTurno", b =>
-                {
-                    b.HasOne("ProyectoClinica.Shared.Entidades.Medico", "Medico")
-                        .WithMany()
-                        .HasForeignKey("MedicoId");
-
-                    b.HasOne("ProyectoClinica.Shared.Entidades.Paciente", "Paciente")
-                        .WithMany()
-                        .HasForeignKey("PacienteId");
-
-                    b.Navigation("Medico");
-
-                    b.Navigation("Paciente");
                 });
 
             modelBuilder.Entity("ProyectoClinica.Shared.Entidades.HistoriaClinica", b =>
@@ -303,6 +290,25 @@ namespace ProyectoClinica.Server.Migrations
                         .IsRequired();
 
                     b.Navigation("Especialidad");
+                });
+
+            modelBuilder.Entity("ProyectoClinica.Shared.Entidades.Turno", b =>
+                {
+                    b.HasOne("ProyectoClinica.Shared.Entidades.Medico", "Medico")
+                        .WithMany()
+                        .HasForeignKey("MedicoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProyectoClinica.Shared.Entidades.Paciente", "Paciente")
+                        .WithMany()
+                        .HasForeignKey("PacienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Medico");
+
+                    b.Navigation("Paciente");
                 });
 
             modelBuilder.Entity("ProyectoClinica.Shared.Entidades.HistoriaClinica", b =>
