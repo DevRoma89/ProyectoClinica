@@ -43,7 +43,7 @@ export default function Login() {
             <h1 className="text-2xl font-medium text-white">Bienvenido</h1>
             <p className="text-slate-400 mt-1">Ingresa a tu cuenta</p>
           </div>
-
+          {/* mi humilde aporte */}
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Email */}
