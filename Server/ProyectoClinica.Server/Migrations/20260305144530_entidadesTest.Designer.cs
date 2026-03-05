@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProyectoClinica.Server;
 
@@ -11,9 +12,11 @@ using ProyectoClinica.Server;
 namespace ProyectoClinica.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260305144530_entidadesTest")]
+    partial class entidadesTest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,36 +52,6 @@ namespace ProyectoClinica.Server.Migrations
                     b.ToTable("AntecedenteMedicos");
                 });
 
-            modelBuilder.Entity("ProyectoClinica.Shared.Entidades.DisponibilidadMedico", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("DiaSemana")
-                        .HasColumnType("int");
-
-                    b.Property<int>("DuracionTurnoMinutos")
-                        .HasColumnType("int");
-
-                    b.Property<TimeSpan>("HoraFin")
-                        .HasColumnType("time");
-
-                    b.Property<TimeSpan>("HoraInicio")
-                        .HasColumnType("time");
-
-                    b.Property<int?>("MedicoId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MedicoId");
-
-                    b.ToTable("disponibilidadMedicos");
-                });
-
             modelBuilder.Entity("ProyectoClinica.Shared.Entidades.Especialidad", b =>
                 {
                     b.Property<int>("Id")
@@ -96,50 +69,6 @@ namespace ProyectoClinica.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Especialidades");
-                });
-
-            modelBuilder.Entity("ProyectoClinica.Shared.Entidades.GestionTurno", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Estado")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Fecha")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("FechaCancelacion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("FechaCreacion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<TimeSpan>("HoraFin")
-                        .HasColumnType("time");
-
-                    b.Property<TimeSpan>("HoraInicio")
-                        .HasColumnType("time");
-
-                    b.Property<int?>("MedicoId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Observaciones")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("PacienteId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MedicoId");
-
-                    b.HasIndex("PacienteId");
-
-                    b.ToTable("GestionTurnos");
                 });
 
             modelBuilder.Entity("ProyectoClinica.Shared.Entidades.HistoriaClinica", b =>
@@ -257,30 +186,6 @@ namespace ProyectoClinica.Server.Migrations
                         .IsRequired();
 
                     b.Navigation("HistoriaClinica");
-                });
-
-            modelBuilder.Entity("ProyectoClinica.Shared.Entidades.DisponibilidadMedico", b =>
-                {
-                    b.HasOne("ProyectoClinica.Shared.Entidades.Medico", "Medico")
-                        .WithMany()
-                        .HasForeignKey("MedicoId");
-
-                    b.Navigation("Medico");
-                });
-
-            modelBuilder.Entity("ProyectoClinica.Shared.Entidades.GestionTurno", b =>
-                {
-                    b.HasOne("ProyectoClinica.Shared.Entidades.Medico", "Medico")
-                        .WithMany()
-                        .HasForeignKey("MedicoId");
-
-                    b.HasOne("ProyectoClinica.Shared.Entidades.Paciente", "Paciente")
-                        .WithMany()
-                        .HasForeignKey("PacienteId");
-
-                    b.Navigation("Medico");
-
-                    b.Navigation("Paciente");
                 });
 
             modelBuilder.Entity("ProyectoClinica.Shared.Entidades.HistoriaClinica", b =>
