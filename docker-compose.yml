@@ -23,5 +23,15 @@ services:
     environment:
       ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=ClinicaDB;User=sa;Password=Password123!;TrustServerCertificate=True"
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend_clinica
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+
 volumes:
   sql_data:
