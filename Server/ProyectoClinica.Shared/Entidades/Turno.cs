@@ -22,6 +22,7 @@ namespace ProyectoClinica.Shared.Entidades
         public string Observaciones { get; set; }
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
         public DateTime? FechaCancelacion { get; set; }
+        public bool Visible { get; set; } = true;
 
 
     }

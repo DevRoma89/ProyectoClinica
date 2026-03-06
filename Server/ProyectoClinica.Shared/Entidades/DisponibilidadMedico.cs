@@ -18,6 +18,7 @@ namespace ProyectoClinica.Shared.Entidades
         public TimeSpan HoraInicio { get; set; }
         public TimeSpan HoraFin { get; set; }
         public int DuracionTurnoMinutos { get; set; }
-    
+        public bool Visible { get; set; } = true;
+
     }
 }

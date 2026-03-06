@@ -33,5 +33,6 @@ namespace ProyectoClinica.Shared.Entidades
         public DateTime FechaRegistro { get; set; } = DateTime.Now;
 
         public int NumeroSecuencia { get; set; }
+        public bool Visible { get; set; } = true;
     }
 }
