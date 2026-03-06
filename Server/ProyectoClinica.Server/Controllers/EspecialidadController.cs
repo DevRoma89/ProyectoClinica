@@ -6,7 +6,7 @@ namespace ProyectoClinica.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class EspecialidadController:ControllerBase
+    public class EspecialidadController : ControllerBase
     {
 
         private readonly AppDbContext context;
@@ -19,7 +19,7 @@ namespace ProyectoClinica.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Especialidad>>> Get()
         {
-            return await context.Especialidades.ToListAsync();
+            return await context.Especialidades.Where(x => x.Visible == true).ToListAsync();
         }
 
         [HttpPost]
@@ -35,23 +35,55 @@ namespace ProyectoClinica.Server.Controllers
                 return BadRequest("No puede agregar una especialidad con descripcion vacia");
             }
 
+            especialidad.Nombre = especialidad.Nombre.ToUpper();
+            especialidad.Descripcion = especialidad.Descripcion.ToUpper();
+
+            var existeNombre = await context.Especialidades.AnyAsync(x => x.Nombre == especialidad.Nombre);
+
+            if (existeNombre)
+            {
+                return BadRequest("Ya existe una especialidad con ese nombre");
+            }
+
+            var existeDescripcion = await context.Especialidades.AnyAsync(x => x.Descripcion == especialidad.Descripcion);
+
+            if (existeDescripcion)
+            {
+                return BadRequest("Ya existe una especialidad con esa descripcion");
+            }
+
             context.Add(especialidad);
 
             await context.SaveChangesAsync();
 
-            return Ok(especialidad);
+            return Ok("Se ha creado una especialidad");
         }
 
         [HttpPut]
-        public async Task<ActionResult> Put()
+        public async Task<ActionResult> Put([FromBody] Especialidad especialidad)
         {
-            return Ok();
+
+            context.Update(especialidad);
+            await context.SaveChangesAsync();
+
+            return Ok("Se ha actualizado una especialidad");
         }
 
-        [HttpDelete]
-        public async Task<ActionResult> Delete()
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete([FromRoute] int id )
         {
-            return Ok();
+
+            var existe = await context.Especialidades.FirstOrDefaultAsync(x=>x.Id == id);
+
+            if (existe == null)
+            {
+                return NotFound("No se encontro una especialidad con ese Id");
+            }
+
+            existe.Visible = false;
+            await context.SaveChangesAsync();       
+
+            return Ok("Se ha borrado una especialidad");
         }
     }
 }

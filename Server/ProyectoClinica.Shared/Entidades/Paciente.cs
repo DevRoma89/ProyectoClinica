@@ -22,6 +22,7 @@ namespace ProyectoClinica.Shared.Entidades
         public bool Activo { get; set; } 
         public List<Turno> Turnos { get; set; }
         public HistoriaClinica HistoriaClinica { get; set; }
+        public bool Visible { get; set; } = true;
 
     }
 }

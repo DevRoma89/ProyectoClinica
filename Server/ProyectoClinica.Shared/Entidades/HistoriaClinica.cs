@@ -18,6 +18,7 @@ namespace ProyectoClinica.Shared.Entidades
 
         public List<AntecedenteMedico> AntecedentesMedicos { get; set; }
         public List<Consulta> Consultas { get; set; }
+        public bool Visible { get; set; } = true;
     }
 
 }

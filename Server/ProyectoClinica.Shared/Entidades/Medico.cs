@@ -21,6 +21,7 @@ namespace ProyectoClinica.Shared.Entidades
         public List<Turno> Turnos { get; set; }
         public List<Consulta> Consultas { get; set; }
         public List<DisponibilidadMedico> Disponibilidades { get; set; }
+        public bool Visible { get; set; } = true;
 
     }
 }

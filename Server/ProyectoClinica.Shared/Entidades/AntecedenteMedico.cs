@@ -19,5 +19,6 @@ namespace ProyectoClinica.Shared.Entidades
         public string Descripcion { get; set; }
 
         public DateTime FechaRegistro { get; set; } = DateTime.Now;
+        public bool Visible { get; set; } = true;
     }
 } 

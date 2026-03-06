@@ -20,5 +20,6 @@ namespace ProyectoClinica.Shared.Entidades
         public string ArchivoAdjuntoURL { get; set; }
 
         public DateTime FechaEstudio { get; set; }
+        public bool Visible { get; set; } = true;
     }
 }
