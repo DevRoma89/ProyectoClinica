@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { LoginFormData } from './types';
+import img from '../../assets/hospital.jpg';
 
 export default function Login() {
   const [formData, setFormData] = useState<LoginFormData>({ email: '', password: '' });
@@ -28,9 +29,14 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900">
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Background image */}
+      <div
+        className="absolute -inset-4 bg-cover bg-center blur-sm brightness-[0.3]"
+        style={{ backgroundImage: `url(${img})` }}
+      />
       {/* Card */}
-      <div className="w-full max-w-md mx-4">
+      <div className="relative z-10 w-full max-w-md mx-4">
         <div className="bg-white/10 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/10 p-8">
           {/* Header */}
           <div className="text-center mb-8">
@@ -40,7 +46,7 @@ export default function Login() {
                   d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
             </div>
-            <h1 className="text-2xl font-bold text-white">Bienvenido</h1>
+            <h1 className="text-2xl font-medium text-white">Bienvenido</h1>
             <p className="text-slate-400 mt-1">Ingresa a tu cuenta</p>
           </div>
 
@@ -64,7 +70,7 @@ export default function Login() {
                   type="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="correo@ejemplo.com"
+                  placeholder="email@ejemplo.com"
                   className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                 />
               </div>
