@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProyectoClinica.Server;
 
@@ -11,9 +12,11 @@ using ProyectoClinica.Server;
 namespace ProyectoClinica.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260306103531_EntidadesC-EM")]
+    partial class EntidadesCEM
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -89,12 +92,11 @@ namespace ProyectoClinica.Server.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("HistoriaClinicaId");
+
                     b.HasIndex("MedicoId");
 
                     b.HasIndex("TurnoId");
-
-                    b.HasIndex("HistoriaClinicaId", "NumeroSecuencia")
-                        .IsUnique();
 
                     b.ToTable("Consultas");
                 });
@@ -197,8 +199,7 @@ namespace ProyectoClinica.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PacienteId")
-                        .IsUnique();
+                    b.HasIndex("PacienteId");
 
                     b.ToTable("HistoriaClinicas");
                 });
@@ -343,13 +344,13 @@ namespace ProyectoClinica.Server.Migrations
             modelBuilder.Entity("ProyectoClinica.Shared.Entidades.Consulta", b =>
                 {
                     b.HasOne("ProyectoClinica.Shared.Entidades.HistoriaClinica", "HistoriaClinica")
-                        .WithMany("Consultas")
+                        .WithMany()
                         .HasForeignKey("HistoriaClinicaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ProyectoClinica.Shared.Entidades.Medico", "Medico")
-                        .WithMany("Consultas")
+                        .WithMany()
                         .HasForeignKey("MedicoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -368,7 +369,7 @@ namespace ProyectoClinica.Server.Migrations
             modelBuilder.Entity("ProyectoClinica.Shared.Entidades.DisponibilidadMedico", b =>
                 {
                     b.HasOne("ProyectoClinica.Shared.Entidades.Medico", "Medico")
-                        .WithMany("Disponibilidades")
+                        .WithMany()
                         .HasForeignKey("MedicoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -390,8 +391,8 @@ namespace ProyectoClinica.Server.Migrations
             modelBuilder.Entity("ProyectoClinica.Shared.Entidades.HistoriaClinica", b =>
                 {
                     b.HasOne("ProyectoClinica.Shared.Entidades.Paciente", "Paciente")
-                        .WithOne("HistoriaClinica")
-                        .HasForeignKey("ProyectoClinica.Shared.Entidades.HistoriaClinica", "PacienteId")
+                        .WithMany()
+                        .HasForeignKey("PacienteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -412,13 +413,13 @@ namespace ProyectoClinica.Server.Migrations
             modelBuilder.Entity("ProyectoClinica.Shared.Entidades.Turno", b =>
                 {
                     b.HasOne("ProyectoClinica.Shared.Entidades.Medico", "Medico")
-                        .WithMany("Turnos")
+                        .WithMany()
                         .HasForeignKey("MedicoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ProyectoClinica.Shared.Entidades.Paciente", "Paciente")
-                        .WithMany("Turnos")
+                        .WithMany()
                         .HasForeignKey("PacienteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -431,24 +432,6 @@ namespace ProyectoClinica.Server.Migrations
             modelBuilder.Entity("ProyectoClinica.Shared.Entidades.HistoriaClinica", b =>
                 {
                     b.Navigation("AntecedentesMedicos");
-
-                    b.Navigation("Consultas");
-                });
-
-            modelBuilder.Entity("ProyectoClinica.Shared.Entidades.Medico", b =>
-                {
-                    b.Navigation("Consultas");
-
-                    b.Navigation("Disponibilidades");
-
-                    b.Navigation("Turnos");
-                });
-
-            modelBuilder.Entity("ProyectoClinica.Shared.Entidades.Paciente", b =>
-                {
-                    b.Navigation("HistoriaClinica");
-
-                    b.Navigation("Turnos");
                 });
 #pragma warning restore 612, 618
         }
