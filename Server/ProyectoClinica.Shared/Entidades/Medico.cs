@@ -16,7 +16,11 @@ namespace ProyectoClinica.Shared.Entidades
         public Especialidad Especialidad { get; set; }
         public string Telefono { get; set; }
         public string Email { get; set; }
-        public bool Activo { get; set; }    
+        public bool Activo { get; set; }
+
+        public List<Turno> Turnos { get; set; }
+        public List<Consulta> Consultas { get; set; }
+        public List<DisponibilidadMedico> Disponibilidades { get; set; }
 
     }
 }

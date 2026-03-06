@@ -17,6 +17,7 @@ namespace ProyectoClinica.Shared.Entidades
         public string ObservacionesGenerales { get; set; }
 
         public List<AntecedenteMedico> AntecedentesMedicos { get; set; }
+        public List<Consulta> Consultas { get; set; }
     }
 
 }
