@@ -12,14 +12,24 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+
+builder.WebHost.UseUrls("http://0.0.0.0:8080");
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+
+// Aplicar migraciones al iniciar
+using (var scope = app.Services.CreateScope())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
 }
+
+// Configure the HTTP request pipeline.
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
 
 app.UseCors( options => 
 
