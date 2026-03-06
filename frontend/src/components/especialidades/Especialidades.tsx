@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import NavBar from '../navBar/navBar';
 import Popup from '../popup/Popup';
 import type { Especialidad } from './types';
+import { METHODS } from '../../constants';
 
 const API_URL = `${import.meta.env.VITE_API_URL}/api/Especialidad`;
 
@@ -46,12 +47,12 @@ export default function Especialidades() {
     try {
       const res = editingId
         ? await fetch(API_URL, {
-            method: 'PUT',
+            method: METHODS.PUT,
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id: editingId, nombre, descripcion }),
           })
         : await fetch(API_URL, {
-            method: 'POST',
+            method: METHODS.POST,
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ nombre, descripcion }),
           });
@@ -78,7 +79,7 @@ export default function Especialidades() {
   const handleDelete = async () => {
     if (!deleteId) return;
     try {
-      const res = await fetch(`${API_URL}/${deleteId}`, { method: 'DELETE' });
+      const res = await fetch(`${API_URL}/${deleteId}`, { method: METHODS.DELETE });
       if (!res.ok) {
         const errorMsg = await res.text();
         showError(errorMsg);
