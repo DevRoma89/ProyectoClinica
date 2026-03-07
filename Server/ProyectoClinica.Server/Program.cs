@@ -23,7 +23,7 @@ builder.Services.AddCors(options =>
         });
 });
 
-builder.WebHost.UseUrls("http://0.0.0.0:8080;https://0.0.0.0:8081");
+builder.WebHost.UseUrls("http://0.0.0.0:8080");
 
 var app = builder.Build();
 
@@ -39,6 +39,8 @@ using (var scope = app.Services.CreateScope())
 
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 
