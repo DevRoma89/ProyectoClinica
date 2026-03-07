@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ProyectoClinica.Shared.DTOs.EspecialidadDTOs;
 using ProyectoClinica.Shared.Entidades;
 
 namespace ProyectoClinica.Server.Controllers
@@ -17,14 +18,17 @@ namespace ProyectoClinica.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Especialidad>>> Get()
+        public async Task<ActionResult<List<EspecialidadGetDTO>>> Get()
         {
-            return await context.Especialidades.Where(x => x.Visible == true).ToListAsync();
+
+
+            return await context.Especialidades.Where(x => x.Visible == true).Select(x => EspecialidadGetDTO.EntityToDto(x)).ToListAsync();
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] Especialidad especialidad)
+        public async Task<ActionResult> Post([FromBody] EspecialidadPostDTO especialidad)
         {
+
 
             if (String.IsNullOrEmpty(especialidad.Nombre))
             {
@@ -52,7 +56,9 @@ namespace ProyectoClinica.Server.Controllers
                 return BadRequest("Ya existe una especialidad con esa descripcion");
             }
 
-            context.Add(especialidad);
+            var entity = EspecialidadPostDTO.DtoToEntity(especialidad);
+
+            context.Especialidades.Add(entity);
 
             await context.SaveChangesAsync();
 
