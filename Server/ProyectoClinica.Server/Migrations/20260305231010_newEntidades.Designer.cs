@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProyectoClinica.Server;
 
@@ -11,9 +12,11 @@ using ProyectoClinica.Server;
 namespace ProyectoClinica.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260305231010_newEntidades")]
+    partial class newEntidades
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,67 +45,11 @@ namespace ProyectoClinica.Server.Migrations
                     b.Property<string>("Tipo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Visible")
-                        .HasColumnType("bit");
-
                     b.HasKey("Id");
 
                     b.HasIndex("HistoriaClinicaId");
 
                     b.ToTable("AntecedenteMedicos");
-                });
-
-            modelBuilder.Entity("ProyectoClinica.Shared.Entidades.Consulta", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Diagnostico")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("FechaConsulta")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("FechaRegistro")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("HistoriaClinicaId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MedicoId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("MotivoConsulta")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("NumeroSecuencia")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Observaciones")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Tratamiento")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("TurnoId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("Visible")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MedicoId");
-
-                    b.HasIndex("TurnoId");
-
-                    b.HasIndex("HistoriaClinicaId", "NumeroSecuencia")
-                        .IsUnique();
-
-                    b.ToTable("Consultas");
                 });
 
             modelBuilder.Entity("ProyectoClinica.Shared.Entidades.DisponibilidadMedico", b =>
@@ -128,9 +75,6 @@ namespace ProyectoClinica.Server.Migrations
                     b.Property<int>("MedicoId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("Visible")
-                        .HasColumnType("bit");
-
                     b.HasKey("Id");
 
                     b.HasIndex("MedicoId");
@@ -152,45 +96,9 @@ namespace ProyectoClinica.Server.Migrations
                     b.Property<string>("Nombre")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Visible")
-                        .HasColumnType("bit");
-
                     b.HasKey("Id");
 
                     b.ToTable("Especialidades");
-                });
-
-            modelBuilder.Entity("ProyectoClinica.Shared.Entidades.EstudioMedico", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ArchivoAdjuntoURL")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ConsultaId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("FechaEstudio")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Resultado")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TipoEstudio")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Visible")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ConsultaId");
-
-                    b.ToTable("EstudiosMedicos");
                 });
 
             modelBuilder.Entity("ProyectoClinica.Shared.Entidades.HistoriaClinica", b =>
@@ -210,13 +118,9 @@ namespace ProyectoClinica.Server.Migrations
                     b.Property<int>("PacienteId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("Visible")
-                        .HasColumnType("bit");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("PacienteId")
-                        .IsUnique();
+                    b.HasIndex("PacienteId");
 
                     b.ToTable("HistoriaClinicas");
                 });
@@ -249,9 +153,6 @@ namespace ProyectoClinica.Server.Migrations
 
                     b.Property<string>("Telefono")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Visible")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -301,9 +202,6 @@ namespace ProyectoClinica.Server.Migrations
                     b.Property<string>("Telefono")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Visible")
-                        .HasColumnType("bit");
-
                     b.HasKey("Id");
 
                     b.ToTable("Pacientes");
@@ -344,9 +242,6 @@ namespace ProyectoClinica.Server.Migrations
                     b.Property<int>("PacienteId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("Visible")
-                        .HasColumnType("bit");
-
                     b.HasKey("Id");
 
                     b.HasIndex("MedicoId");
@@ -367,58 +262,22 @@ namespace ProyectoClinica.Server.Migrations
                     b.Navigation("HistoriaClinica");
                 });
 
-            modelBuilder.Entity("ProyectoClinica.Shared.Entidades.Consulta", b =>
-                {
-                    b.HasOne("ProyectoClinica.Shared.Entidades.HistoriaClinica", "HistoriaClinica")
-                        .WithMany("Consultas")
-                        .HasForeignKey("HistoriaClinicaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ProyectoClinica.Shared.Entidades.Medico", "Medico")
-                        .WithMany("Consultas")
-                        .HasForeignKey("MedicoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ProyectoClinica.Shared.Entidades.Turno", "Turno")
-                        .WithMany()
-                        .HasForeignKey("TurnoId");
-
-                    b.Navigation("HistoriaClinica");
-
-                    b.Navigation("Medico");
-
-                    b.Navigation("Turno");
-                });
-
             modelBuilder.Entity("ProyectoClinica.Shared.Entidades.DisponibilidadMedico", b =>
                 {
                     b.HasOne("ProyectoClinica.Shared.Entidades.Medico", "Medico")
-                        .WithMany("Disponibilidades")
+                        .WithMany()
                         .HasForeignKey("MedicoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Medico");
-                });
-
-            modelBuilder.Entity("ProyectoClinica.Shared.Entidades.EstudioMedico", b =>
-                {
-                    b.HasOne("ProyectoClinica.Shared.Entidades.Consulta", "Consulta")
-                        .WithMany()
-                        .HasForeignKey("ConsultaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Consulta");
                 });
 
             modelBuilder.Entity("ProyectoClinica.Shared.Entidades.HistoriaClinica", b =>
                 {
                     b.HasOne("ProyectoClinica.Shared.Entidades.Paciente", "Paciente")
-                        .WithOne("HistoriaClinica")
-                        .HasForeignKey("ProyectoClinica.Shared.Entidades.HistoriaClinica", "PacienteId")
+                        .WithMany()
+                        .HasForeignKey("PacienteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -439,13 +298,13 @@ namespace ProyectoClinica.Server.Migrations
             modelBuilder.Entity("ProyectoClinica.Shared.Entidades.Turno", b =>
                 {
                     b.HasOne("ProyectoClinica.Shared.Entidades.Medico", "Medico")
-                        .WithMany("Turnos")
+                        .WithMany()
                         .HasForeignKey("MedicoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ProyectoClinica.Shared.Entidades.Paciente", "Paciente")
-                        .WithMany("Turnos")
+                        .WithMany()
                         .HasForeignKey("PacienteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -458,24 +317,6 @@ namespace ProyectoClinica.Server.Migrations
             modelBuilder.Entity("ProyectoClinica.Shared.Entidades.HistoriaClinica", b =>
                 {
                     b.Navigation("AntecedentesMedicos");
-
-                    b.Navigation("Consultas");
-                });
-
-            modelBuilder.Entity("ProyectoClinica.Shared.Entidades.Medico", b =>
-                {
-                    b.Navigation("Consultas");
-
-                    b.Navigation("Disponibilidades");
-
-                    b.Navigation("Turnos");
-                });
-
-            modelBuilder.Entity("ProyectoClinica.Shared.Entidades.Paciente", b =>
-                {
-                    b.Navigation("HistoriaClinica");
-
-                    b.Navigation("Turnos");
                 });
 #pragma warning restore 612, 618
         }
