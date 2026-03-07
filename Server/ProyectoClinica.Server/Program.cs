@@ -12,8 +12,18 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        });
+});
 
-builder.WebHost.UseUrls("http://0.0.0.0:8080");
+builder.WebHost.UseUrls("http://0.0.0.0:8080;https://0.0.0.0:8081");
 
 var app = builder.Build();
 
@@ -29,15 +39,6 @@ using (var scope = app.Services.CreateScope())
 
 app.UseSwagger();
 app.UseSwaggerUI();
-
-
-app.UseCors( options => 
-
-    options.AllowAnyOrigin()
-    .AllowAnyMethod()
-    .AllowAnyHeader()
-   
-    );
 
 app.UseHttpsRedirection();
 
