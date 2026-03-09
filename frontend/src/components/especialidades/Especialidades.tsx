@@ -1,19 +1,20 @@
 import { useEffect, useState } from 'react';
 import NavBar from '../navBar/navBar';
 import Popup from '../popup/Popup';
-import type { Especialidad } from './types';
-import { METHODS } from '../../constants';
+import type { Specialty } from './types';
+import type { PopupState } from '../popup/types';
+import { METHODS, ENDPOINTS, GENERIC_ERROR } from '../../constants';
+import { authFetch } from '../../utils/authFetch';
+import { parseApiError } from '../../utils/parseApiError';
 
-const API_URL = `${import.meta.env.VITE_API_URL}/api/Especialidad`;
-
-export default function Especialidades() {
-  const [especialidades, setEspecialidades] = useState<Especialidad[]>([]);
+const Especialidades = () => {
+  const [especialidades, setEspecialidades] = useState<Specialty[]>([]);
   const [nombre, setNombre] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [editingId, setEditingId] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<number | null>(null);
-  const [popup, setPopup] = useState<{ title: string; message: string; variant: 'danger' | 'info' | 'success' } | null>(null);
+  const [popup, setPopup] = useState<PopupState | null>(null);
 
   const showError = (message: string) => {
     setPopup({ title: 'Error', message, variant: 'danger' });
@@ -21,11 +22,11 @@ export default function Especialidades() {
 
   const fetchEspecialidades = async () => {
     try {
-      const res = await fetch(API_URL);
+      const res = await authFetch({ endpoint: ENDPOINTS.ESPECIALIDAD, method: METHODS.GET });
       const data = await res.json();
       setEspecialidades(data);
     } catch {
-      showError('Error al cargar especialidades');
+      showError(GENERIC_ERROR);
     } finally {
       setLoading(false);
     }
@@ -46,19 +47,19 @@ export default function Especialidades() {
 
     try {
       const res = editingId
-        ? await fetch(API_URL, {
+        ? await authFetch({
+            endpoint: ENDPOINTS.ESPECIALIDAD,
             method: METHODS.PUT,
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id: editingId, nombre, descripcion }),
           })
-        : await fetch(API_URL, {
+        : await authFetch({
+            endpoint: ENDPOINTS.ESPECIALIDAD,
             method: METHODS.POST,
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ nombre, descripcion }),
           });
 
       if (!res.ok) {
-        const errorMsg = await res.text();
+        const errorMsg = await parseApiError(res);
         showError(errorMsg);
         return;
       }
@@ -66,11 +67,11 @@ export default function Especialidades() {
       resetForm();
       fetchEspecialidades();
     } catch {
-      showError('Error de conexion con el servidor');
+      showError(GENERIC_ERROR);
     }
   };
 
-  const handleEdit = (esp: Especialidad) => {
+  const handleEdit = (esp: Specialty) => {
     setEditingId(esp.id);
     setNombre(esp.nombre);
     setDescripcion(esp.descripcion);
@@ -79,15 +80,15 @@ export default function Especialidades() {
   const handleDelete = async () => {
     if (!deleteId) return;
     try {
-      const res = await fetch(`${API_URL}/${deleteId}`, { method: METHODS.DELETE });
+      const res = await authFetch({ endpoint: `${ENDPOINTS.ESPECIALIDAD}/${deleteId}`, method: METHODS.DELETE });
       if (!res.ok) {
-        const errorMsg = await res.text();
+        const errorMsg = await parseApiError(res);
         showError(errorMsg);
       } else {
         fetchEspecialidades();
       }
     } catch {
-      showError('Error de conexion con el servidor');
+      showError(GENERIC_ERROR);
     } finally {
       setDeleteId(null);
     }
@@ -185,18 +186,26 @@ export default function Especialidades() {
                     <td className="px-4 py-3 text-sm">{esp.nombre}</td>
                     <td className="px-4 py-3 text-sm text-slate-300">{esp.descripcion}</td>
                     <td className="px-4 py-3 text-sm text-right">
-                      <button
-                        onClick={() => handleEdit(esp)}
-                        className="text-blue-400 hover:text-blue-300 mr-3 transition"
-                      >
-                        Editar
-                      </button>
-                      <button
-                        onClick={() => setDeleteId(esp.id)}
-                        className="text-red-400 hover:text-red-300 transition"
-                      >
-                        Eliminar
-                      </button>
+                      <div className="flex items-center justify-end gap-1">
+                        <button
+                          onClick={() => handleEdit(esp)}
+                          className="p-2 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 transition"
+                          title="Editar"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                          </svg>
+                        </button>
+                        <button
+                          onClick={() => setDeleteId(esp.id)}
+                          className="p-2 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-500/10 transition"
+                          title="Eliminar"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -208,3 +217,5 @@ export default function Especialidades() {
     </div>
   );
 }
+
+export default Especialidades;

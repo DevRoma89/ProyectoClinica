@@ -1,6 +1,6 @@
 import NavBar from "../navBar/navBar";
 
-export default function Dashboard() {
+const Inicio = () => {
   return (
     <div className="min-h-screen bg-slate-900 text-white flex flex-col">
       <NavBar />
@@ -11,3 +11,5 @@ export default function Dashboard() {
     </div>
   );
 }
+
+export default Inicio;

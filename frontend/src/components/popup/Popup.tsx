@@ -6,7 +6,7 @@ const variantStyles = {
   success: 'bg-green-600 hover:bg-green-500',
 };
 
-export default function Popup({
+const Popup = ({
   title,
   message,
   confirmText = 'Confirmar',
@@ -15,7 +15,7 @@ export default function Popup({
   variant = 'info',
   onConfirm,
   onCancel,
-}: PopupProps) {
+}: PopupProps) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Overlay */}
@@ -45,3 +45,5 @@ export default function Popup({
     </div>
   );
 }
+
+export default Popup;
