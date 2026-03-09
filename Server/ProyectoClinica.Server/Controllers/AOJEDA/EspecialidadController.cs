@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using ProyectoClinica.Shared.DTOs.EspecialidadDTOs;
 using ProyectoClinica.Shared.Entidades;
 
-namespace ProyectoClinica.Server.Controllers
+namespace ProyectoClinica.Server.Controllers.AOJEDA
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -18,7 +18,7 @@ namespace ProyectoClinica.Server.Controllers
         {
             this.context = context;
         }
-
+        [Authorize(Roles = "Administrador")]
         [HttpGet]
         public async Task<ActionResult<List<EspecialidadGetDTO>>> Get()
         {
@@ -32,11 +32,11 @@ namespace ProyectoClinica.Server.Controllers
         {
 
 
-            if (String.IsNullOrEmpty(especialidad.Nombre))
+            if (string.IsNullOrEmpty(especialidad.Nombre))
             {
                 return BadRequest("No puede agregar una especialidad con nombre vacio");
             }
-            if (String.IsNullOrEmpty(especialidad.Descripcion))
+            if (string.IsNullOrEmpty(especialidad.Descripcion))
             {
                 return BadRequest("No puede agregar una especialidad con descripcion vacia");
             }
