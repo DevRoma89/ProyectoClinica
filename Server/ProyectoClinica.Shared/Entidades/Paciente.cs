@@ -19,7 +19,7 @@ namespace ProyectoClinica.Shared.Entidades
         public string Direccion { get; set; }
         public string GrupoSanguineo { get; set; }
         public DateTime FechaAlta { get; set; }
-        public bool Activo { get; set; } 
+        public bool Activo { get; set; } = true;
         public List<Turno> Turnos { get; set; }
         public HistoriaClinica HistoriaClinica { get; set; }
         public bool Visible { get; set; } = true;

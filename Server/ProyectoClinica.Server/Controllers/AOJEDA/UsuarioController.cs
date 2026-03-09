@@ -8,7 +8,7 @@ using System.Security.Claims;
 using System.Security.Cryptography.Xml;
 using System.Text;
 
-namespace ProyectoClinica.Server.Controllers
+namespace ProyectoClinica.Server.Controllers.AOJEDA
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -29,7 +29,7 @@ namespace ProyectoClinica.Server.Controllers
         [HttpPost("Login")]
         [AllowAnonymous]
         public async Task<ActionResult<RespuestaAutenticacionDTO>> Login(
-            CredencialesUsuarioDTO credencialesUsuarioDTO)
+            LoginDTO credencialesUsuarioDTO)
         {
             var usuario = await userManager.FindByEmailAsync(credencialesUsuarioDTO.Email);
 
@@ -41,7 +41,7 @@ namespace ProyectoClinica.Server.Controllers
 
             if (resultado.Succeeded)
             {
-                return await ConstruirToken(credencialesUsuarioDTO);
+                return await ConstruirTokenLogin(credencialesUsuarioDTO);
             }
             else
             {
@@ -49,6 +49,33 @@ namespace ProyectoClinica.Server.Controllers
             }
         }
 
+
+        private async Task<RespuestaAutenticacionDTO> ConstruirTokenLogin(LoginDTO credencialesUsuarioDTO)
+        {
+            var usuario = await userManager.FindByEmailAsync(credencialesUsuarioDTO.Email);
+
+            var claims = new List<Claim>
+            {
+                new Claim("Email", credencialesUsuarioDTO.Email),
+                new Claim("UserName", usuario.UserName )
+            };
+
+            var claimsDB = await userManager.GetClaimsAsync(usuario);
+
+            claims.AddRange(claimsDB);
+
+            var llave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["llavejwt"]!));
+            var credenciales = new SigningCredentials(llave, SecurityAlgorithms.HmacSha256);
+
+            var expiracion = DateTime.UtcNow.AddYears(1);
+
+            var tokenDeSeguridad = new JwtSecurityToken(issuer: null, audience: null,
+                claims: claims, expires: expiracion, signingCredentials: credenciales);
+
+            var token = new JwtSecurityTokenHandler().WriteToken(tokenDeSeguridad);
+
+            return new RespuestaAutenticacionDTO { Token = token, Expiracion = expiracion };
+        }
         private ActionResult RetornarLoginIncorrecto()
         {
             ModelState.AddModelError(string.Empty, "Login Incorrecto");
@@ -69,21 +96,32 @@ namespace ProyectoClinica.Server.Controllers
 
             var resultado = await userManager.CreateAsync(usuario,credencialesUsuarioDTO.Password!);
 
-            if (resultado.Succeeded)
+            if (!resultado.Succeeded)
             {
-                var respuestaAutentificacion = await ConstruirToken(credencialesUsuarioDTO);
-
-                return respuestaAutentificacion;
-            }
-            else
-            {
+            
                 foreach (var error in resultado.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
 
                 return ValidationProblem(); 
+             
             }
+
+            if (!string.IsNullOrEmpty(credencialesUsuarioDTO.Rol))
+            {
+                var claims = await userManager.GetClaimsAsync(usuario); 
+
+                if(!claims.Any(x=>x.Type == ClaimTypes.Role && x.Value == credencialesUsuarioDTO.Rol ))
+                {
+                    await userManager.AddClaimAsync(usuario, new Claim(ClaimTypes.Role, credencialesUsuarioDTO.Rol)); 
+                }
+
+            }
+
+            var respuestaAutentificacion = await ConstruirToken(credencialesUsuarioDTO);
+
+            return respuestaAutentificacion;
         }
 
         private async Task<RespuestaAutenticacionDTO> ConstruirToken(CredencialesUsuarioDTO credencialesUsuarioDTO)
@@ -104,12 +142,12 @@ namespace ProyectoClinica.Server.Controllers
 
             var expiracion = DateTime.UtcNow.AddYears(1);
 
-            var tokenDeSeguridad = new JwtSecurityToken(issuer:null, audience:null,
-                claims:claims,expires:expiracion,signingCredentials:credenciales);
-        
-            var token = new JwtSecurityTokenHandler().WriteToken(tokenDeSeguridad); 
+            var tokenDeSeguridad = new JwtSecurityToken(issuer: null, audience: null,
+                claims: claims, expires: expiracion, signingCredentials: credenciales);
 
-            return new RespuestaAutenticacionDTO { Token = token , Expiracion = expiracion};
+            var token = new JwtSecurityTokenHandler().WriteToken(tokenDeSeguridad);
+
+            return new RespuestaAutenticacionDTO { Token = token, Expiracion = expiracion };
         }
 
     }
