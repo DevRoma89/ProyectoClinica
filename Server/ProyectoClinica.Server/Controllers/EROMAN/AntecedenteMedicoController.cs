@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProyectoClinica.Shared.Entidades;
+using ProyectoClinica.Shared.Entidades.EROMAN;
 
-namespace ProyectoClinica.Server.Controllers
+namespace ProyectoClinica.Server.Controllers.EROMAN
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -34,12 +34,12 @@ namespace ProyectoClinica.Server.Controllers
                 return BadRequest("No existe una historia clinica con ese Id");
             }
 
-            if (String.IsNullOrEmpty(antecedente.Tipo))
+            if (string.IsNullOrEmpty(antecedente.Tipo))
             {
                 return BadRequest("No puede agregar un antecedente con tipo vacio");
             }
 
-            if (String.IsNullOrEmpty(antecedente.Descripcion))
+            if (string.IsNullOrEmpty(antecedente.Descripcion))
             {
                 return BadRequest("No puede agregar un antecedente con descripcion vacia");
             }
@@ -65,12 +65,12 @@ namespace ProyectoClinica.Server.Controllers
                 return NotFound("No se encontro un antecedente medico con ese Id");
             }
 
-            if (String.IsNullOrEmpty(antecedente.Tipo))
+            if (string.IsNullOrEmpty(antecedente.Tipo))
             {
                 return BadRequest("No puede actualizar un antecedente con tipo vacio");
             }
 
-            if (String.IsNullOrEmpty(antecedente.Descripcion))
+            if (string.IsNullOrEmpty(antecedente.Descripcion))
             {
                 return BadRequest("No puede actualizar un antecedente con descripcion vacia");
             }

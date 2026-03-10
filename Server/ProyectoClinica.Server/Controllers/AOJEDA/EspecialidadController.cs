@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProyectoClinica.Shared.DTOs.EspecialidadDTOs;
-using ProyectoClinica.Shared.Entidades;
+using ProyectoClinica.Shared.DTOs.AOJEDA.EspecialidadDTOs;
+using ProyectoClinica.Shared.Entidades.AOJEDA;
 
 namespace ProyectoClinica.Server.Controllers.AOJEDA
 {

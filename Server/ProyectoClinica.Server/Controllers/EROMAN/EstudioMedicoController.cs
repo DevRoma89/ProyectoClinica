@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProyectoClinica.Shared.Entidades;
+using ProyectoClinica.Shared.Entidades.EROMAN;
 
-namespace ProyectoClinica.Server.Controllers
+namespace ProyectoClinica.Server.Controllers.EROMAN
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -34,17 +34,17 @@ namespace ProyectoClinica.Server.Controllers
                 return BadRequest("No existe una consulta con ese Id");
             }
 
-            if (String.IsNullOrEmpty(estudioMedico.TipoEstudio))
+            if (string.IsNullOrEmpty(estudioMedico.TipoEstudio))
             {
                 return BadRequest("No puede agregar un estudio medico con tipo vacio");
             }
 
-            if (String.IsNullOrEmpty(estudioMedico.Resultado))
+            if (string.IsNullOrEmpty(estudioMedico.Resultado))
             {
                 return BadRequest("No puede agregar un estudio medico con resultado vacio");
             }
 
-            if (String.IsNullOrEmpty(estudioMedico.ArchivoAdjuntoURL))
+            if (string.IsNullOrEmpty(estudioMedico.ArchivoAdjuntoURL))
             {
                 return BadRequest("No puede agregar un estudio medico con archivo adjunto vacio");
             }
@@ -79,17 +79,17 @@ namespace ProyectoClinica.Server.Controllers
                 return BadRequest("No existe una consulta con ese Id");
             }
 
-            if (String.IsNullOrEmpty(estudioMedico.TipoEstudio))
+            if (string.IsNullOrEmpty(estudioMedico.TipoEstudio))
             {
                 return BadRequest("No puede actualizar un estudio medico con tipo vacio");
             }
 
-            if (String.IsNullOrEmpty(estudioMedico.Resultado))
+            if (string.IsNullOrEmpty(estudioMedico.Resultado))
             {
                 return BadRequest("No puede actualizar un estudio medico con resultado vacio");
             }
 
-            if (String.IsNullOrEmpty(estudioMedico.ArchivoAdjuntoURL))
+            if (string.IsNullOrEmpty(estudioMedico.ArchivoAdjuntoURL))
             {
                 return BadRequest("No puede actualizar un estudio medico con archivo adjunto vacio");
             }

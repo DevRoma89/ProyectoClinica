@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProyectoClinica.Shared.Entidades
+namespace ProyectoClinica.Shared.Entidades.AOJEDA
 {
     public class Especialidad
     {

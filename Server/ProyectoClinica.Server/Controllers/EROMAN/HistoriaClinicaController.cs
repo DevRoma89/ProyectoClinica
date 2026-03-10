@@ -1,9 +1,9 @@
 using System.Diagnostics.Metrics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProyectoClinica.Shared.Entidades;
+using ProyectoClinica.Shared.Entidades.EROMAN;
 
-namespace ProyectoClinica.Server.Controllers
+namespace ProyectoClinica.Server.Controllers.EROMAN
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -40,7 +40,7 @@ namespace ProyectoClinica.Server.Controllers
                 return BadRequest("Ese paciente ya tiene una historia clinica");
             }
 
-            if (String.IsNullOrEmpty(historiaClinica.ObservacionesGenerales))
+            if (string.IsNullOrEmpty(historiaClinica.ObservacionesGenerales))
             {
                 return BadRequest("No puede agregar una historia clinica con observaciones vacias");
             }
@@ -64,7 +64,7 @@ namespace ProyectoClinica.Server.Controllers
                 return NotFound("No se encontro una historia clinica con ese Id");
             }
 
-            if (String.IsNullOrEmpty(historiaClinica.ObservacionesGenerales))
+            if (string.IsNullOrEmpty(historiaClinica.ObservacionesGenerales))
             {
                 return BadRequest("No puede actualizar una historia clinica con observaciones vacias");
             }

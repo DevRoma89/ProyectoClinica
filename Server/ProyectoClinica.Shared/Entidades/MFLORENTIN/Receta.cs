@@ -1,10 +1,11 @@
-﻿using System;
+﻿using ProyectoClinica.Shared.Entidades.EROMAN;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProyectoClinica.Shared.Entidades
+namespace ProyectoClinica.Shared.Entidades.MFLORENTIN
 {
     public class Receta
     {
