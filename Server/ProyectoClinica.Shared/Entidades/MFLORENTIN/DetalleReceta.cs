@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ProyectoClinica.Shared.Entidades
+namespace ProyectoClinica.Shared.Entidades.MFLORENTIN
 {
     public class DetalleReceta
     {

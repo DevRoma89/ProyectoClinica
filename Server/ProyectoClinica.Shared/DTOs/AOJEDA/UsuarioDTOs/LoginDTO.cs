@@ -5,18 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProyectoClinica.Shared.DTOs.UsuarioDTOs
+namespace ProyectoClinica.Shared.DTOs.AOJEDA.UsuarioDTOs
 {
-    public class CredencialesUsuarioDTO
+    public class LoginDTO
     {
 
         [Required]
         [EmailAddress]
         public required string Email { get; set; }
         [Required]
-        public string?  Password { get; set; }       
-        public string UserName { get; set; }
-        public string Rol { get; set; }
-
+        public string Password { get; set; }
     }
 }

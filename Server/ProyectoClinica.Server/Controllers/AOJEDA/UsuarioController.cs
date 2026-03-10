@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using ProyectoClinica.Shared.DTOs.UsuarioDTOs;
+using ProyectoClinica.Shared.DTOs.AOJEDA.UsuarioDTOs;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography.Xml;

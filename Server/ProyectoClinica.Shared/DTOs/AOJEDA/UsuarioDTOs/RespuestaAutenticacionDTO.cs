@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProyectoClinica.Shared.DTOs.UsuarioDTOs
+namespace ProyectoClinica.Shared.DTOs.AOJEDA.UsuarioDTOs
 {
     public class RespuestaAutenticacionDTO
     {

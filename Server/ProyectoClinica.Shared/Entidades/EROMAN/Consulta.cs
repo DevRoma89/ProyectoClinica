@@ -1,10 +1,13 @@
+using ProyectoClinica.Shared.Entidades.AOJEDA;
+using ProyectoClinica.Shared.Entidades.JBRITEZ;
+using ProyectoClinica.Shared.Entidades.MFLORENTIN;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProyectoClinica.Shared.Entidades
+namespace ProyectoClinica.Shared.Entidades.EROMAN
 {
     public class Consulta
     {
@@ -15,7 +18,7 @@ namespace ProyectoClinica.Shared.Entidades
 
 
         public int? TurnoId { get; set; }
-        public Turno? Turno { get; set; }
+        public Turno Turno { get; set; }
 
         public int MedicoId { get; set; }
         public Medico Medico { get; set; }
@@ -34,5 +37,6 @@ namespace ProyectoClinica.Shared.Entidades
 
         public int NumeroSecuencia { get; set; }
         public bool Visible { get; set; } = true;
+        public Receta Receta { get; set; }
     }
 }

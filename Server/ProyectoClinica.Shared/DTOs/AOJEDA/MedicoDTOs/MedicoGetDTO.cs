@@ -1,11 +1,11 @@
-﻿using ProyectoClinica.Shared.Entidades;
+﻿using ProyectoClinica.Shared.Entidades.AOJEDA;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProyectoClinica.Shared.DTOs.MedicoDTOs
+namespace ProyectoClinica.Shared.DTOs.AOJEDA.MedicoDTOs
 {
     public class MedicoGetDTO
     {

@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProyectoClinica.Shared.DTOs.MedicoDTOs;
-using ProyectoClinica.Shared.DTOs.PacienteDTOs;
+using ProyectoClinica.Shared.DTOs.AOJEDA.PacienteDTOs;
+using ProyectoClinica.Shared.DTOs.AOJEDA.MedicoDTOs;
+using ProyectoClinica.Shared.Entidades;
+using ProyectoClinica.Shared.Entidades.EROMAN;
 
 namespace ProyectoClinica.Server.Controllers.AOJEDA
 {
@@ -57,6 +59,15 @@ namespace ProyectoClinica.Server.Controllers.AOJEDA
             context.Pacientes.Add(entity);
 
             await context.SaveChangesAsync();
+
+            var historiaClinica = new HistoriaClinica
+            {
+                PacienteId = entity.Id
+            }; 
+
+            context.HistoriaClinicas.Add(historiaClinica);
+            await context.SaveChangesAsync();   
+
 
             return Ok("Se ha registrado un nuevo paciente");
         }

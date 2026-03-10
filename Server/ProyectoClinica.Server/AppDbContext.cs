@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using ProyectoClinica.Shared.Entidades;
+using ProyectoClinica.Shared.Entidades.AOJEDA;
+using ProyectoClinica.Shared.Entidades.EROMAN;
+using ProyectoClinica.Shared.Entidades.JBRITEZ;
 
 namespace ProyectoClinica.Server
 {

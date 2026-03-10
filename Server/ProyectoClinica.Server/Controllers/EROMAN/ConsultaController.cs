@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProyectoClinica.Shared.Entidades;
+using ProyectoClinica.Shared.Entidades.EROMAN;
 
-namespace ProyectoClinica.Server.Controllers
+namespace ProyectoClinica.Server.Controllers.EROMAN
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -53,22 +53,22 @@ namespace ProyectoClinica.Server.Controllers
                 }
             }
 
-            if (String.IsNullOrEmpty(consulta.MotivoConsulta))
+            if (string.IsNullOrEmpty(consulta.MotivoConsulta))
             {
                 return BadRequest("No puede agregar una consulta con motivo vacio");
             }
 
-            if (String.IsNullOrEmpty(consulta.Diagnostico))
+            if (string.IsNullOrEmpty(consulta.Diagnostico))
             {
                 return BadRequest("No puede agregar una consulta con diagnostico vacio");
             }
 
-            if (String.IsNullOrEmpty(consulta.Tratamiento))
+            if (string.IsNullOrEmpty(consulta.Tratamiento))
             {
                 return BadRequest("No puede agregar una consulta con tratamiento vacio");
             }
 
-            if (String.IsNullOrEmpty(consulta.Observaciones))
+            if (string.IsNullOrEmpty(consulta.Observaciones))
             {
                 return BadRequest("No puede agregar una consulta con observaciones vacias");
             }
@@ -123,22 +123,22 @@ namespace ProyectoClinica.Server.Controllers
                 }
             }
 
-            if (String.IsNullOrEmpty(consulta.MotivoConsulta))
+            if (string.IsNullOrEmpty(consulta.MotivoConsulta))
             {
                 return BadRequest("No puede actualizar una consulta con motivo vacio");
             }
 
-            if (String.IsNullOrEmpty(consulta.Diagnostico))
+            if (string.IsNullOrEmpty(consulta.Diagnostico))
             {
                 return BadRequest("No puede actualizar una consulta con diagnostico vacio");
             }
 
-            if (String.IsNullOrEmpty(consulta.Tratamiento))
+            if (string.IsNullOrEmpty(consulta.Tratamiento))
             {
                 return BadRequest("No puede actualizar una consulta con tratamiento vacio");
             }
 
-            if (String.IsNullOrEmpty(consulta.Observaciones))
+            if (string.IsNullOrEmpty(consulta.Observaciones))
             {
                 return BadRequest("No puede actualizar una consulta con observaciones vacias");
             }

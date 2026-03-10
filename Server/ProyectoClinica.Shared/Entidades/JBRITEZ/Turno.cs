@@ -5,8 +5,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ProyectoClinica.Shared.Entidades.AOJEDA;
 
-namespace ProyectoClinica.Shared.Entidades
+namespace ProyectoClinica.Shared.Entidades.JBRITEZ
 {
     public class Turno 
     {

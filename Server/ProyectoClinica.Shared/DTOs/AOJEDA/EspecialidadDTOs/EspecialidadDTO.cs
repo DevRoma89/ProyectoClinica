@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ProyectoClinica.Shared.Entidades;
+using ProyectoClinica.Shared.Entidades.AOJEDA;
 
-namespace ProyectoClinica.Shared.DTOs.EspecialidadDTOs
+namespace ProyectoClinica.Shared.DTOs.AOJEDA.EspecialidadDTOs
 {
 
     public class EspecialidadGetDTO

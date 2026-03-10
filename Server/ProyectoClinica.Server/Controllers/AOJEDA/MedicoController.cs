@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProyectoClinica.Shared.DTOs.EspecialidadDTOs;
-using ProyectoClinica.Shared.DTOs.MedicoDTOs;
+using ProyectoClinica.Shared.DTOs.AOJEDA.MedicoDTOs;
+using ProyectoClinica.Shared.DTOs.AOJEDA.EspecialidadDTOs;
 using ProyectoClinica.Shared.Entidades;
 
 namespace ProyectoClinica.Server.Controllers.AOJEDA
