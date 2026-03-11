@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ProyectoClinica.Shared.DTOs.EROMAN.EstudioMedicoDTOs;
 using ProyectoClinica.Shared.Entidades.EROMAN;
 
 namespace ProyectoClinica.Server.Controllers.EROMAN
@@ -16,44 +17,40 @@ namespace ProyectoClinica.Server.Controllers.EROMAN
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<EstudioMedico>>> Get()
+        public async Task<ActionResult<List<EstudioMedicoGetDTO>>> Get()
         {
             return await context.EstudiosMedicos
                 .Where(x => x.Visible == true)
+                .Select(x=> EstudioMedicoGetDTO.EntityToDTO(x))
                 .ToListAsync();
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] EstudioMedico estudioMedico)
+        public async Task<ActionResult> Post([FromBody] EstudioMedicoPostDTO dto)
         {
             var existeConsulta = await context.Consultas
-                .AnyAsync(x => x.Id == estudioMedico.ConsultaId && x.Visible == true);
+                .AnyAsync(x => x.Id == dto.ConsultaId && x.Visible == true);
 
             if (!existeConsulta)
             {
                 return BadRequest("No existe una consulta con ese Id");
             }
 
-            if (string.IsNullOrEmpty(estudioMedico.TipoEstudio))
+            if (string.IsNullOrEmpty(dto.TipoEstudio))
             {
                 return BadRequest("No puede agregar un estudio medico con tipo vacio");
             }
 
-            if (string.IsNullOrEmpty(estudioMedico.Resultado))
+            if (string.IsNullOrEmpty(dto.Resultado))
             {
                 return BadRequest("No puede agregar un estudio medico con resultado vacio");
             }
 
-            if (string.IsNullOrEmpty(estudioMedico.ArchivoAdjuntoURL))
+            if (string.IsNullOrEmpty(dto.ArchivoAdjuntoURL))
             {
                 return BadRequest("No puede agregar un estudio medico con archivo adjunto vacio");
             }
-
-            estudioMedico.TipoEstudio = estudioMedico.TipoEstudio.ToUpper();
-            estudioMedico.Resultado = estudioMedico.Resultado.ToUpper();
-            estudioMedico.ArchivoAdjuntoURL = estudioMedico.ArchivoAdjuntoURL.ToUpper();
-            estudioMedico.Visible = true;
-
+            var estudioMedico = EstudioMedicoPostDTO.DtoToEntity(dto);    
             context.Add(estudioMedico);
             await context.SaveChangesAsync();
 

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ProyectoClinica.Shared.DTOs.EROMAN.ConsultaDTOs;
 using ProyectoClinica.Shared.Entidades.EROMAN;
 
 namespace ProyectoClinica.Server.Controllers.EROMAN
@@ -16,18 +17,19 @@ namespace ProyectoClinica.Server.Controllers.EROMAN
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Consulta>>> Get()
+        public async Task<ActionResult<List<ConsultaGetDTO>>> Get()
         {
             return await context.Consultas
                 .Where(x => x.Visible == true)
+                .Select(x=> ConsultaGetDTO.EntityToDTO(x))
                 .ToListAsync();
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] Consulta consulta)
+        public async Task<ActionResult> Post([FromBody] ConsultaPostDTO dto)
         {
             var existeHistoriaClinica = await context.HistoriaClinicas
-                .AnyAsync(x => x.Id == consulta.HistoriaClinicaId && x.Visible == true);
+                .AnyAsync(x => x.Id == dto.HistoriaClinicaId && x.Visible == true);
 
             if (!existeHistoriaClinica)
             {
@@ -35,17 +37,17 @@ namespace ProyectoClinica.Server.Controllers.EROMAN
             }
 
             var existeMedico = await context.Medicos
-                .AnyAsync(x => x.Id == consulta.MedicoId);
+                .AnyAsync(x => x.Id == dto.MedicoId);
 
             if (!existeMedico)
             {
                 return BadRequest("No existe un medico con ese Id");
             }
 
-            if (consulta.TurnoId.HasValue)
+            if (dto.TurnoId.HasValue)
             {
                 var existeTurno = await context.Turnos
-                    .AnyAsync(x => x.Id == consulta.TurnoId.Value);
+                    .AnyAsync(x => x.Id == dto.TurnoId.Value);
 
                 if (!existeTurno)
                 {
@@ -53,31 +55,27 @@ namespace ProyectoClinica.Server.Controllers.EROMAN
                 }
             }
 
-            if (string.IsNullOrEmpty(consulta.MotivoConsulta))
+            if (string.IsNullOrEmpty(dto.MotivoConsulta))
             {
                 return BadRequest("No puede agregar una consulta con motivo vacio");
             }
 
-            if (string.IsNullOrEmpty(consulta.Diagnostico))
+            if (string.IsNullOrEmpty(dto.Diagnostico))
             {
                 return BadRequest("No puede agregar una consulta con diagnostico vacio");
             }
 
-            if (string.IsNullOrEmpty(consulta.Tratamiento))
+            if (string.IsNullOrEmpty(dto.Tratamiento))
             {
                 return BadRequest("No puede agregar una consulta con tratamiento vacio");
             }
 
-            if (string.IsNullOrEmpty(consulta.Observaciones))
+            if (string.IsNullOrEmpty(dto.Observaciones))
             {
                 return BadRequest("No puede agregar una consulta con observaciones vacias");
             }
 
-            consulta.MotivoConsulta = consulta.MotivoConsulta.ToUpper();
-            consulta.Diagnostico = consulta.Diagnostico.ToUpper();
-            consulta.Tratamiento = consulta.Tratamiento.ToUpper();
-            consulta.Observaciones = consulta.Observaciones.ToUpper();
-            consulta.Visible = true;
+            var consulta = ConsultaPostDTO.DtoToEntity(dto);    
 
             context.Add(consulta);
             await context.SaveChangesAsync();
@@ -86,7 +84,7 @@ namespace ProyectoClinica.Server.Controllers.EROMAN
         }
 
         [HttpPut]
-        public async Task<ActionResult> Put([FromBody] Consulta consulta)
+        public async Task<ActionResult> Put([FromBody] ConsultaPutDTO consulta)
         {
             var existe = await context.Consultas
                 .AnyAsync(x => x.Id == consulta.Id);
@@ -142,12 +140,7 @@ namespace ProyectoClinica.Server.Controllers.EROMAN
             {
                 return BadRequest("No puede actualizar una consulta con observaciones vacias");
             }
-
-            consulta.MotivoConsulta = consulta.MotivoConsulta.ToUpper();
-            consulta.Diagnostico = consulta.Diagnostico.ToUpper();
-            consulta.Tratamiento = consulta.Tratamiento.ToUpper();
-            consulta.Observaciones = consulta.Observaciones.ToUpper();
-
+              
             context.Update(consulta);
             await context.SaveChangesAsync();
 

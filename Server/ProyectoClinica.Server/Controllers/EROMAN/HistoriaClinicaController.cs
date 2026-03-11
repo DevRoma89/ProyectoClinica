@@ -1,6 +1,7 @@
 using System.Diagnostics.Metrics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ProyectoClinica.Shared.DTOs.EROMAN.HistoriaClinicaDTOs;
 using ProyectoClinica.Shared.Entidades.EROMAN;
 
 namespace ProyectoClinica.Server.Controllers.EROMAN
@@ -17,43 +18,17 @@ namespace ProyectoClinica.Server.Controllers.EROMAN
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<HistoriaClinica>>> Get()
+        public async Task<ActionResult<List<HistoriaClinicaGetDTO>>> Get()
         {
             return await context.HistoriaClinicas
+                .Include(x=>x.Paciente)
+                .Include(x=>x.AntecedentesMedicos)
+                .Include(x=> x.Consultas)
                 .Where(x => x.Visible == true)
+                .Select(x=> HistoriaClinicaGetDTO.EntityToDTO(x))
                 .ToListAsync();
         }
-        [HttpPost]
-        public async Task<ActionResult> Post([FromBody] HistoriaClinica historiaClinica)
-        {
-            var existePaciente = await context.Pacientes.AnyAsync(x => x.Id == historiaClinica.PacienteId);
-
-            if (!existePaciente)
-            {
-                return BadRequest("No existe un paciente con ese Id");
-            }
-
-            var existeHistoria = await context.HistoriaClinicas.AnyAsync(x => x.PacienteId == historiaClinica.PacienteId && x.Visible == true);
-
-            if (existeHistoria)
-            {
-                return BadRequest("Ese paciente ya tiene una historia clinica");
-            }
-
-            if (string.IsNullOrEmpty(historiaClinica.ObservacionesGenerales))
-            {
-                return BadRequest("No puede agregar una historia clinica con observaciones vacias");
-            }
-
-            historiaClinica.ObservacionesGenerales = historiaClinica.ObservacionesGenerales.ToUpper();
-            historiaClinica.Visible = true;
-
-            context.Add(historiaClinica);
-            await context.SaveChangesAsync();
-
-            return Ok("Se ha creado una historia clinica");
-        }
-
+         
         [HttpPut]
         public async Task<ActionResult> Put([FromBody] HistoriaClinica historiaClinica)
         {
