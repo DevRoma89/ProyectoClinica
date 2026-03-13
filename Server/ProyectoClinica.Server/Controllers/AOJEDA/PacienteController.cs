@@ -73,10 +73,13 @@ namespace ProyectoClinica.Server.Controllers.AOJEDA
         }
 
         [HttpPut]
-        public async Task<ActionResult> Put([FromBody] PacientePostDTO paciente)
+        public async Task<ActionResult> Put([FromBody] PacientePutDTO dto)
         {
 
-            var entity = PacientePostDTO.DtoToEntity(paciente);
+            var paciente = await context.Pacientes.FindAsync(dto.Id); 
+
+
+            var entity = PacientePutDTO.DtoToEntity(dto,paciente);
 
             context.Pacientes.Update(entity);
             await context.SaveChangesAsync();
