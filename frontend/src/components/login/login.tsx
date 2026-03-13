@@ -8,7 +8,7 @@ import type { PopupState } from '../popup/types';
 import { parseApiError } from '../../utils/parseApiError';
 
 const Login = () => {
-  const [formData, setFormData] = useState<LoginFormData>({ userName: '', email: '', password: '' });
+  const [formData, setFormData] = useState<LoginFormData>({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [popup, setPopup] = useState<PopupState | null>(null);
@@ -16,8 +16,8 @@ const Login = () => {
   const navigate = useNavigate();
 
   const verifyFormData = (): boolean => {
-    const { userName, email, password } = formData;
-    return userName !== "" && email !== "" && password !== "";
+    const { email, password } = formData;
+    return email !== "" && password !== "";
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,7 +38,7 @@ const Login = () => {
       const res = await fetch(`${import.meta.env.VITE_API_URL}${ENDPOINTS.LOGIN}`, {
         method: METHODS.POST,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userName: formData.userName, email: formData.email, password: formData.password }),
+        body: JSON.stringify({ email: formData.email, password: formData.password }),
       });
 
       if (!res.ok) {
@@ -91,30 +91,6 @@ const Login = () => {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Username */}
-            <div>
-              <label htmlFor="userName" className="block text-sm font-medium text-slate-300 mb-1.5">
-                Nombre de usuario
-              </label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg className="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                </span>
-                <input
-                  id="userName"
-                  name="userName"
-                  type="text"
-                  value={formData.userName}
-                  onChange={handleChange}
-                  placeholder="juanperez"
-                  className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                />
-              </div>
-            </div>
-
             {/* Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-1.5">
