@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import type { RegisterFormData } from './types';
+import { ROLES } from './types';
 import { METHODS, ENDPOINTS, GENERIC_ERROR } from '../../constants';
 import { parseApiError } from '../../utils/parseApiError';
 import img from '../../assets/hospital.jpg';
@@ -15,7 +16,9 @@ const Registro = () => {
     email: '',
     password: '',
     confirmarPassword: '',
+    rol: '',
   });
+  const [rolOpen, setRolOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [popup, setPopup] = useState<PopupState | null>(null);
@@ -27,8 +30,8 @@ const Registro = () => {
   };
 
   const verifyFormData = (): boolean => {
-    const { userName, email, password, confirmarPassword } = formData;
-    if (!userName || !email || !password || !confirmarPassword) {
+    const { userName, email, password, confirmarPassword, rol } = formData;
+    if (!userName || !email || !password || !confirmarPassword || !rol) {
       setError('Por favor, completa todos los campos.');
       return false;
     }
@@ -54,6 +57,7 @@ const Registro = () => {
           userName: formData.userName,
           email: formData.email,
           password: formData.password,
+          rol: formData.rol,
         }),
       });
 
@@ -220,6 +224,56 @@ const Registro = () => {
                   placeholder="••••••••"
                   className={inputClass}
                 />
+              </div>
+            </div>
+
+            {/* Rol */}
+            <div>
+              <label className="block text-sm font-medium text-slate-300 mb-1.5">
+                Rol
+              </label>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg className="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                      d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setRolOpen(!rolOpen)}
+                  className="w-full pl-10 pr-10 py-2.5 bg-white/5 border border-white/10 rounded-lg text-left text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                >
+                  {formData.rol
+                    ? ROLES.find((r) => r.value === formData.rol)?.label
+                    : <span className="text-slate-500">Selecciona un rol</span>}
+                </button>
+                <span className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <svg className={`w-4 h-4 text-slate-500 transition-transform ${rolOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </span>
+                {rolOpen && (
+                  <div className="absolute z-20 mt-1 w-full bg-slate-800 border border-slate-700 rounded-lg shadow-xl overflow-hidden">
+                    {ROLES.map((rol) => (
+                      <button
+                        key={rol.value}
+                        type="button"
+                        onClick={() => {
+                          setFormData({ ...formData, rol: rol.value });
+                          setRolOpen(false);
+                        }}
+                        className={`w-full px-4 py-2.5 text-left text-sm transition ${
+                          formData.rol === rol.value
+                            ? 'bg-blue-600 text-white'
+                            : 'text-slate-300 hover:bg-slate-700'
+                        }`}
+                      >
+                        {rol.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
