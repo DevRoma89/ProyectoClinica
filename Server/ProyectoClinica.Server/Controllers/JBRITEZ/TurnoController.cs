@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProyectoClinica.Server.TurnoDTOs;
-using ProyectoClinica.Shared.DTOs.JBRITEZ.TurnoDTOs;
+using ProyectoClinica.Shared.DTOs.JBRITEZ.TurnoDTOs; 
 
 namespace ProyectoClinica.Server.Controllers.JBRITEZ
 {
