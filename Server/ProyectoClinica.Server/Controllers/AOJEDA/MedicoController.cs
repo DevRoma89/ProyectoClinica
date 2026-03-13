@@ -72,12 +72,18 @@ namespace ProyectoClinica.Server.Controllers.AOJEDA
         }
 
         [HttpPut]
-        public async Task<ActionResult> Put([FromBody] MedicoPostDTO medico)
+        public async Task<ActionResult> Put([FromBody] MedicoPutDTO medico)
         {
 
-            var entity = MedicoPostDTO.DtoToEntity(medico); 
+            var existeMedico = await context.Medicos.FindAsync(medico.Id);
 
-            context.Medicos.Update(entity);
+            if (existeMedico == null)
+            {
+                return NotFound("No se encontro un medico con ese Id ");
+            }
+
+            var entity = MedicoPutDTO.DtoToEntity(medico,existeMedico); 
+
             await context.SaveChangesAsync();
 
             return Ok("Se ha actualizado un medico");
