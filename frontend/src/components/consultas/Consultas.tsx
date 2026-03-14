@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import NavBar from '../navBar/navBar';
 import Popup from '../popup/Popup';
+import CalendarioMedico from './CalendarioMedico';
 import type { Consulta, ConsultaForm, EstudioMedico, EstudioMedicoForm } from './types';
 import type { Medico } from '../medicos/types';
 import type { Turno } from '../turnos/types';
@@ -11,6 +12,8 @@ import { authFetch } from '../../utils/authFetch';
 import { parseApiError } from '../../utils/parseApiError';
 import { getUserRole, getEmail } from '../../utils/isTokenValid';
 import type { Paciente } from '../pacientes/types';
+
+type ViewMode = 'lista' | 'calendario' | 'turnos';
 
 const INITIAL_FORM: ConsultaForm = {
   historiaClinicaId: '',
@@ -33,6 +36,8 @@ const INITIAL_ESTUDIO: EstudioMedicoForm = {
 const Consultas = () => {
   const role = getUserRole();
   const canEdit = role !== 'Paciente';
+  const isMedico = role === 'Medico';
+  const [viewMode, setViewMode] = useState<ViewMode>(isMedico ? 'calendario' : 'lista');
 
   const [consultas, setConsultas] = useState<Consulta[]>([]);
   const [medicos, setMedicos] = useState<Medico[]>([]);
@@ -57,9 +62,72 @@ const Consultas = () => {
   const [deleteEstudioId, setDeleteEstudioId] = useState<number | null>(null);
   const [loadingEstudios, setLoadingEstudios] = useState(false);
 
+  // Estado para filtro de turnos por fecha
+  const [filtroFechaTurnos, setFiltroFechaTurnos] = useState(() => new Date().toISOString().split('T')[0]);
+  const [turnosPorFecha, setTurnosPorFecha] = useState<Turno[]>([]);
+  const [loadingTurnos, setLoadingTurnos] = useState(false);
+
+  // Ordenar consultas: primero las del día actual, luego por fecha descendente
+  const consultasOrdenadas = useMemo(() => {
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    const hoyStr = hoy.toISOString().split('T')[0];
+
+    return [...consultas].sort((a, b) => {
+      const fechaA = a.fechaConsulta.split('T')[0];
+      const fechaB = b.fechaConsulta.split('T')[0];
+      const esHoyA = fechaA === hoyStr;
+      const esHoyB = fechaB === hoyStr;
+
+      // Primero las del día actual
+      if (esHoyA && !esHoyB) return -1;
+      if (!esHoyA && esHoyB) return 1;
+
+      // Luego ordenar por fecha descendente (más recientes primero)
+      return new Date(b.fechaConsulta).getTime() - new Date(a.fechaConsulta).getTime();
+    });
+  }, [consultas]);
+
   const showError = (message: string) => {
     setPopup({ title: 'Error', message, variant: 'danger' });
   };
+
+  // Cargar turnos por fecha desde el endpoint
+  const fetchTurnosPorFecha = async (fecha: string) => {
+    setLoadingTurnos(true);
+    try {
+      const res = await authFetch({
+        endpoint: `${ENDPOINTS.TURNO}/${fecha}`,
+        method: METHODS.GET
+      });
+      if (res.ok) {
+        const data: Turno[] = await res.json();
+        // Filtrar solo los turnos del médico logueado
+        const email = getEmail();
+        const miMedico = medicos.find(m => m.email.toLowerCase() === email?.toLowerCase());
+        if (miMedico) {
+          const misTurnos = data.filter(t => Number(t.medicoId) === Number(miMedico.id));
+          setTurnosPorFecha(misTurnos.sort((a, b) => a.horaInicio.localeCompare(b.horaInicio)));
+        } else {
+          setTurnosPorFecha([]);
+        }
+      } else {
+        setTurnosPorFecha([]);
+      }
+    } catch {
+      showError('Error al cargar turnos');
+      setTurnosPorFecha([]);
+    } finally {
+      setLoadingTurnos(false);
+    }
+  };
+
+  // Cargar turnos cuando cambia la fecha o los médicos
+  useEffect(() => {
+    if (isMedico && viewMode === 'turnos' && medicos.length > 0) {
+      fetchTurnosPorFecha(filtroFechaTurnos);
+    }
+  }, [filtroFechaTurnos, medicos, viewMode, isMedico]);
 
   const fetchData = async () => {
     try {
@@ -182,15 +250,15 @@ const Consultas = () => {
 
       const res = editingId
         ? await authFetch({
-            endpoint: ENDPOINTS.CONSULTA,
-            method: METHODS.PUT,
-            body: JSON.stringify({ id: editingId, ...body, fechaRegistro: new Date().toISOString() }),
-          })
+          endpoint: ENDPOINTS.CONSULTA,
+          method: METHODS.PUT,
+          body: JSON.stringify({ id: editingId, ...body, fechaRegistro: new Date().toISOString() }),
+        })
         : await authFetch({
-            endpoint: ENDPOINTS.CONSULTA,
-            method: METHODS.POST,
-            body: JSON.stringify(body),
-          });
+          endpoint: ENDPOINTS.CONSULTA,
+          method: METHODS.POST,
+          body: JSON.stringify(body),
+        });
 
       if (!res.ok) {
         const errorMsg = await parseApiError(res);
@@ -269,15 +337,15 @@ const Consultas = () => {
 
       const res = editingEstudioId
         ? await authFetch({
-            endpoint: ENDPOINTS.ESTUDIO_MEDICO,
-            method: METHODS.PUT,
-            body: JSON.stringify({ id: editingEstudioId, ...body, visible: true }),
-          })
+          endpoint: ENDPOINTS.ESTUDIO_MEDICO,
+          method: METHODS.PUT,
+          body: JSON.stringify({ id: editingEstudioId, ...body, visible: true }),
+        })
         : await authFetch({
-            endpoint: ENDPOINTS.ESTUDIO_MEDICO,
-            method: METHODS.POST,
-            body: JSON.stringify(body),
-          });
+          endpoint: ENDPOINTS.ESTUDIO_MEDICO,
+          method: METHODS.POST,
+          body: JSON.stringify(body),
+        });
 
       if (!res.ok) {
         const errorMsg = await parseApiError(res);
@@ -337,16 +405,180 @@ const Consultas = () => {
       <div className="max-w-6xl mx-auto w-full px-4 py-8">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold">{canEdit ? 'Consultas' : 'Mis Consultas'}</h1>
-          {canEdit && !showForm && (
-            <button onClick={() => { resetForm(); setShowForm(true); }} className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-lg transition">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
-              Nueva consulta
-            </button>
-          )}
+          <div className="flex items-center gap-3">
+            {/* Toggle de vista para médicos */}
+            {isMedico && (
+              <div className="flex bg-slate-700 rounded-lg p-1">
+                <button
+                  onClick={() => setViewMode('calendario')}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition ${viewMode === 'calendario' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
+                    }`}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  Calendario
+                </button>
+                <button
+                  onClick={() => setViewMode('turnos')}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition ${viewMode === 'turnos' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
+                    }`}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Turnos
+                </button>
+                <button
+                  onClick={() => setViewMode('lista')}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition ${viewMode === 'lista' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
+                    }`}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                  </svg>
+                  Consultas
+                </button>
+              </div>
+            )}
+            {canEdit && !showForm && viewMode === 'lista' && (
+              <button onClick={() => { resetForm(); setShowForm(true); }} className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-lg transition">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+                Nueva consulta
+              </button>
+            )}
+          </div>
         </div>
 
+        {/* Calendario para médicos */}
+        {isMedico && viewMode === 'calendario' && (
+          <div className="mb-8">
+            <CalendarioMedico onConsultaCreated={fetchData} showError={showError} />
+          </div>
+        )}
+
+        {/* Vista de turnos por día para médicos */}
+        {isMedico && viewMode === 'turnos' && (
+          <div className="mb-8">
+            <div className="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+              {/* Header con filtro de fecha */}
+              <div className="flex items-center justify-between px-6 py-4 border-b border-slate-700">
+                <h2 className="text-lg font-semibold">Mis Turnos del Día</h2>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => {
+                      const fecha = new Date(filtroFechaTurnos);
+                      fecha.setDate(fecha.getDate() - 1);
+                      setFiltroFechaTurnos(fecha.toISOString().split('T')[0]);
+                    }}
+                    className="p-2 hover:bg-slate-700 rounded-lg transition"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                  <input
+                    type="date"
+                    value={filtroFechaTurnos}
+                    onChange={(e) => setFiltroFechaTurnos(e.target.value)}
+                    className="px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <button
+                    onClick={() => {
+                      const fecha = new Date(filtroFechaTurnos);
+                      fecha.setDate(fecha.getDate() + 1);
+                      setFiltroFechaTurnos(fecha.toISOString().split('T')[0]);
+                    }}
+                    className="p-2 hover:bg-slate-700 rounded-lg transition"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => setFiltroFechaTurnos(new Date().toISOString().split('T')[0])}
+                    className="px-3 py-1.5 text-sm bg-slate-700 hover:bg-slate-600 rounded-lg transition"
+                  >
+                    Hoy
+                  </button>
+                </div>
+              </div>
+
+              {/* Lista de turnos */}
+              <div className="p-4">
+                {loadingTurnos ? (
+                  <p className="text-slate-400 text-center py-8">Cargando turnos...</p>
+                ) : turnosPorFecha.length === 0 ? (
+                  <p className="text-slate-400 text-center py-8">No hay turnos para esta fecha</p>
+                ) : (
+                  <div className="space-y-3">
+                    {turnosPorFecha.map(turno => {
+                      const estadoUpper = turno.estado.toUpperCase();
+                      const getEstadoStyle = () => {
+                        switch (estadoUpper) {
+                          case 'PENDIENTE': return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+                          case 'CONFIRMADO': return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+                          case 'COMPLETADO': return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
+                          case 'CANCELADO': return 'bg-red-500/20 text-red-400 border-red-500/30';
+                          default: return 'bg-slate-500/20 text-slate-400 border-slate-500/30';
+                        }
+                      };
+                      const puedeCrearConsulta = estadoUpper !== 'COMPLETADO' && estadoUpper !== 'CANCELADO';
+
+                      return (
+                        <div key={turno.id} className="bg-slate-700/40 rounded-xl p-4 border border-slate-600">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                              <div className="text-center min-w-[60px]">
+                                <p className="text-2xl font-bold text-white">{turno.horaInicio.substring(0, 5)}</p>
+                                <p className="text-xs text-slate-400">a {turno.horaFin.substring(0, 5)}</p>
+                              </div>
+                              <div className="border-l border-slate-600 pl-4">
+                                <p className="font-semibold text-white">{turno.paciente}</p>
+                                <div className="flex items-center gap-2 mt-1">
+                                  <span className={`px-2 py-0.5 rounded text-xs border ${getEstadoStyle()}`}>
+                                    {turno.estado}
+                                  </span>
+                                  {turno.observaciones && (
+                                    <span className="text-xs text-slate-400 truncate max-w-[200px]" title={turno.observaciones}>
+                                      {turno.observaciones}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                            {puedeCrearConsulta && (
+                              <button
+                                onClick={() => setViewMode('calendario')}
+                                className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition"
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                Crear consulta
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* Resumen */}
+              <div className="px-6 py-3 border-t border-slate-700 flex items-center gap-6 text-sm">
+                <span className="text-slate-400">Total: <span className="text-white font-medium">{turnosPorFecha.length}</span> turnos</span>
+                <span className="text-slate-400">Pendientes: <span className="text-amber-400 font-medium">{turnosPorFecha.filter(t => t.estado.toUpperCase() === 'PENDIENTE').length}</span></span>
+                <span className="text-slate-400">Confirmados: <span className="text-blue-400 font-medium">{turnosPorFecha.filter(t => t.estado.toUpperCase() === 'CONFIRMADO').length}</span></span>
+                <span className="text-slate-400">Completados: <span className="text-emerald-400 font-medium">{turnosPorFecha.filter(t => t.estado.toUpperCase() === 'COMPLETADO').length}</span></span>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Formulario colapsable */}
-        {canEdit && showForm && (
+        {canEdit && showForm && viewMode === 'lista' && (
           <form onSubmit={handleSubmit} className="bg-slate-800 rounded-xl p-6 mb-8 border border-slate-700">
             <h2 className="text-lg font-semibold mb-4">{editingId ? 'Editar consulta' : 'Registrar consulta'}</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -446,13 +678,13 @@ const Consultas = () => {
         )}
 
         {/* Lista de consultas como cards expandibles */}
-        {loading ? (
+        {viewMode === 'lista' && (loading ? (
           <p className="text-slate-400 text-center">Cargando...</p>
         ) : consultas.length === 0 ? (
           <p className="text-slate-400 text-center">No hay consultas registradas</p>
         ) : (
           <div className="space-y-3">
-            {consultas.map(c => {
+            {consultasOrdenadas.map(c => {
               const consultaEstudios = getEstudiosForConsulta(c.id);
               const isExpanded = expandedConsultaId === c.id;
 
@@ -607,7 +839,7 @@ const Consultas = () => {
               );
             })}
           </div>
-        )}
+        ))}
       </div>
     </div>
   );
