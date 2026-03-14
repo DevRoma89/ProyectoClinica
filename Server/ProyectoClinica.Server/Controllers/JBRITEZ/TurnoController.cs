@@ -28,6 +28,18 @@ namespace ProyectoClinica.Server.Controllers.JBRITEZ
                                 .Select(x => TurnoGetDTO.EntityToDTO(x))
                                 .ToListAsync();
         }
+        
+        [HttpPost("Fecha")]
+        public async Task<ActionResult<List<TurnoGetDTO>>> GetByDate([FromBody] DateTime fecha)
+        {
+
+            return await context.Turnos
+                                .Include(x => x.Paciente)
+                                .Include(x => x.Medico)
+                                .Where(x => x.Visible == true && x.Fecha == fecha)
+                                .Select(x => TurnoGetDTO.EntityToDTO(x))
+                                .ToListAsync();
+        }
 
         [HttpPost]
         public async Task<ActionResult> Post(TurnoPostDTO dto)
