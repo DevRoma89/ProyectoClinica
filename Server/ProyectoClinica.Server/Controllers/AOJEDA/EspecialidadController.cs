@@ -7,8 +7,7 @@ using ProyectoClinica.Shared.Entidades.AOJEDA;
 namespace ProyectoClinica.Server.Controllers.AOJEDA
 {
     [ApiController]
-    [Route("api/[controller]")]
-    [Authorize]
+    [Route("api/[controller]")] 
     public class EspecialidadController : ControllerBase
     {
 
@@ -17,8 +16,7 @@ namespace ProyectoClinica.Server.Controllers.AOJEDA
         public EspecialidadController(AppDbContext context)
         {
             this.context = context;
-        }
-        [Authorize(Roles = "Administrador")]
+        } 
         [HttpGet]
         public async Task<ActionResult<List<EspecialidadGetDTO>>> Get()
         {

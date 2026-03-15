@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ProyectoClinica.Shared.Entidades.AOJEDA;
 using ProyectoClinica.Shared.Entidades.EROMAN;
@@ -7,7 +8,7 @@ using ProyectoClinica.Shared.Entidades.MFLORENTIN;
 
 namespace ProyectoClinica.Server
 {
-    public class AppDbContext : IdentityDbContext
+    public class AppDbContext : IdentityDbContext<Usuario>
     {
         public AppDbContext(DbContextOptions options) : base(options)
         {
@@ -23,6 +24,19 @@ namespace ProyectoClinica.Server
             modelBuilder.Entity<Consulta>()
                 .HasIndex(c => new { c.HistoriaClinicaId, c.NumeroSecuencia })
                 .IsUnique();
+
+            modelBuilder.Entity<Medico>()
+                .HasOne<Usuario>()
+                .WithMany(u => u.Medicos)
+                .HasForeignKey(x=>x.UsuarioId)
+                .IsRequired(false);
+
+            modelBuilder.Entity<Paciente>()
+                .HasOne<Usuario>()
+                .WithMany(u => u.Pacientes)
+                .HasForeignKey(x=>x.UsuarioId)
+                .IsRequired(false);
+            
         }
 
 

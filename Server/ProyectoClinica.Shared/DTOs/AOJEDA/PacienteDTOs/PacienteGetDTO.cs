@@ -12,6 +12,7 @@ namespace ProyectoClinica.Shared.DTOs.AOJEDA.PacienteDTOs
     {
         public int Id { get; set; }
         public string Nombre { get; set; }
+        public string UsuarioId { get; set; }
         public string Apellido { get; set; }
         public string Documento { get; set; }
         public DateTime FechaNacimiento { get; set; }
@@ -29,6 +30,7 @@ namespace ProyectoClinica.Shared.DTOs.AOJEDA.PacienteDTOs
             return new PacienteGetDTO
             {
                 Id = entity.Id,
+                UsuarioId = entity.UsuarioId,
                 Nombre = entity.Nombre,
                 Apellido = entity.Apellido,
                 Documento = entity.Documento,

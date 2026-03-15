@@ -10,6 +10,8 @@ namespace ProyectoClinica.Shared.DTOs.AOJEDA.PacienteDTOs
 {
     public class PacientePostDTO
     { 
+
+        public string UsuarioId { get; set; }
         public string Nombre { get; set; }
         public string Apellido { get; set; }
         public string Documento { get; set; }
@@ -27,6 +29,7 @@ namespace ProyectoClinica.Shared.DTOs.AOJEDA.PacienteDTOs
 
             return new Paciente
             {
+                UsuarioId = dto.UsuarioId,
                 Nombre = dto.Nombre.ToUpper(),
                 Apellido = dto.Apellido.ToUpper(),
                 Documento = dto.Documento.ToUpper(),
