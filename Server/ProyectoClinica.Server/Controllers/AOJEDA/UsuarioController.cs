@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ProyectoClinica.Shared.DTOs.AOJEDA.UsuarioDTOs;
 using System.IdentityModel.Tokens.Jwt;
@@ -11,19 +12,62 @@ using System.Text;
 namespace ProyectoClinica.Server.Controllers.AOJEDA
 {
     [ApiController]
-    [Route("api/[controller]")]
-    [Authorize]
+    [Route("api/[controller]")] 
     public class UsuarioController:ControllerBase
     {
 
-        private readonly UserManager<IdentityUser> userManager;
+        private readonly UserManager<Usuario> userManager;
         private readonly IConfiguration configuration;
-        private readonly SignInManager<IdentityUser> signInManager;
-        public UsuarioController(UserManager<IdentityUser> userManager, IConfiguration configuration, SignInManager<IdentityUser> signInManager)
+        private readonly SignInManager<Usuario> signInManager;
+        private readonly AppDbContext context;
+        public UsuarioController(UserManager<Usuario> userManager, IConfiguration configuration, SignInManager<Usuario> signInManager, AppDbContext context)
         {
             this.userManager = userManager;
             this.configuration = configuration;
             this.signInManager = signInManager;
+            this.context = context;
+        }
+
+        [HttpGet("Medicos")]
+        public async Task<ActionResult> GetAllMedicos()
+        {
+            var medicos = await context.Users.Select(
+                x => new
+                    {
+                    x.Id,
+                    x.UserName,
+                    Rol = context.UserClaims
+                                 .Where(c=>c.UserId == x.Id )
+                                 .Select(c =>                                               
+                                                c.ClaimValue  
+                                              ).FirstOrDefault(),
+                    }
+                )
+                .Where(x=> x.Rol == "Medico")
+                .ToListAsync();   
+
+            return Ok(medicos);
+        }
+        
+        [HttpGet("Pacientes")]
+        public async Task<ActionResult> GetAllPacientes()
+        {
+            var pacientes = await context.Users.Select(
+                x => new
+                    {
+                    x.Id,
+                    x.UserName,
+                    Rol = context.UserClaims
+                                 .Where(c=>c.UserId == x.Id )
+                                 .Select(c =>                                               
+                                                c.ClaimValue  
+                                              ).FirstOrDefault(),
+                    }
+                )
+                .Where(x=> x.Rol == "Paciente")
+                .ToListAsync();   
+
+            return Ok(pacientes);
         }
 
         [HttpPost("Login")]
@@ -87,7 +131,7 @@ namespace ProyectoClinica.Server.Controllers.AOJEDA
         public async Task<ActionResult<RespuestaAutenticacionDTO>> Registrar(
             CredencialesUsuarioDTO credencialesUsuarioDTO)
         {
-            var usuario = new IdentityUser
+            var usuario = new Usuario
             {
                 UserName = credencialesUsuarioDTO.UserName,
                 Email = credencialesUsuarioDTO.Email

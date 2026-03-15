@@ -10,6 +10,7 @@ namespace ProyectoClinica.Shared.DTOs.AOJEDA.MedicoDTOs
     public class MedicoGetDTO
     {
         public int Id { get; set; }
+        public  string UsuarioId { get; set; }
         public string Nombre { get; set; }
         public string Apellido { get; set; }
         public string Matricula { get; set; }
@@ -25,6 +26,7 @@ namespace ProyectoClinica.Shared.DTOs.AOJEDA.MedicoDTOs
             return new MedicoGetDTO
             {
                 Id = medico.Id,
+                UsuarioId = medico.UsuarioId,   
                 Nombre = medico.Nombre,
                 Apellido = medico.Apellido,
                 Matricula = medico.Matricula,

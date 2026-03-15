@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 namespace ProyectoClinica.Shared.DTOs.AOJEDA.MedicoDTOs
 {
     public class MedicoPostDTO
-    { 
+    {
+        public string UsuarioId { get; set; }
         public string Nombre { get; set; }  
         public string Apellido { get; set; }
         public string Matricula { get; set; }
@@ -22,6 +23,7 @@ namespace ProyectoClinica.Shared.DTOs.AOJEDA.MedicoDTOs
 
             return new Medico
             {
+                UsuarioId = dto.UsuarioId,
                 Nombre = dto.Nombre.ToUpper(),
                 Apellido = dto.Apellido.ToUpper(),
                 Matricula = dto.Matricula.ToUpper(),

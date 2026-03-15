@@ -10,6 +10,7 @@ namespace ProyectoClinica.Shared.DTOs.AOJEDA.PacienteDTOs
     public class PacientePutDTO
     {
         public int Id { get; set; } 
+        public string UsuarioId { get; set; }
         public string Nombre { get; set; }
         public string Apellido { get; set; }
         public string Documento { get; set; }
@@ -24,6 +25,7 @@ namespace ProyectoClinica.Shared.DTOs.AOJEDA.PacienteDTOs
         {
             
             ent.Id = dto.Id;
+            ent.UsuarioId = dto.UsuarioId;
             ent.Nombre = dto.Nombre;
             ent.Apellido = dto.Apellido;
             ent.Documento = dto.Documento;  
