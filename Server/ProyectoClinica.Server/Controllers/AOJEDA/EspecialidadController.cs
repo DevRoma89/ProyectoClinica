@@ -37,10 +37,7 @@ namespace ProyectoClinica.Server.Controllers.AOJEDA
             if (string.IsNullOrEmpty(especialidad.Descripcion))
             {
                 return BadRequest("No puede agregar una especialidad con descripcion vacia");
-            }
-
-            especialidad.Nombre = especialidad.Nombre.ToUpper();
-            especialidad.Descripcion = especialidad.Descripcion.ToUpper();
+            } 
 
             var existeNombre = await context.Especialidades.AnyAsync(x => x.Nombre == especialidad.Nombre);
 
@@ -66,10 +63,18 @@ namespace ProyectoClinica.Server.Controllers.AOJEDA
         }
 
         [HttpPut]
-        public async Task<ActionResult> Put([FromBody] Especialidad especialidad)
+        public async Task<ActionResult> Put([FromBody] EspecialidadPutDTO especialidad)
         {
 
-            context.Update(especialidad);
+            var existeEspecialidad = await context.Especialidades.FindAsync(especialidad.Id);
+
+            if (existeEspecialidad is null)
+            {
+                return NotFound("No se encontro una especialidad con ese Id");
+            }
+
+            var entity = EspecialidadPutDTO.DtoToEntity(especialidad, existeEspecialidad); 
+
             await context.SaveChangesAsync();
 
             return Ok("Se ha actualizado una especialidad");

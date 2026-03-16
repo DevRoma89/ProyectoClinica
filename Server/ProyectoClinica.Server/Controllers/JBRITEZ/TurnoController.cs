@@ -29,8 +29,8 @@ namespace ProyectoClinica.Server.Controllers.JBRITEZ
                                 .ToListAsync();
         }
         
-        [HttpPost("Fecha")]
-        public async Task<ActionResult<List<TurnoGetDTO>>> GetByDate([FromBody] DateTime fecha)
+        [HttpGet("{fecha:datetime}")]
+        public async Task<ActionResult<List<TurnoGetDTO>>> GetByDate([FromRoute] DateTime fecha)
         {
 
             return await context.Turnos
