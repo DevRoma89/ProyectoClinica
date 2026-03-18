@@ -89,7 +89,6 @@ builder.WebHost.UseUrls("http://0.0.0.0:8080");
 
 var app = builder.Build();
 
-
 // Aplicar migraciones al iniciar
 using (var scope = app.Services.CreateScope())
 {
