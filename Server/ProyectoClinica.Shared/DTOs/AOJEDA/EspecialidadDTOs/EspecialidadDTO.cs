@@ -13,17 +13,7 @@ namespace ProyectoClinica.Shared.DTOs.AOJEDA.EspecialidadDTOs
         public int Id { get; set; }
         public string Nombre { get; set; }
         public string Descripcion { get; set; }
-
-        public static List<EspecialidadGetDTO> ListEntityToDto(List<Especialidad> entity)
-        {
-            return entity.Select( x => new EspecialidadGetDTO
-            {
-                Descripcion = x.Descripcion,
-                Id = x.Id,  
-                Nombre = x.Nombre
-            }).ToList();
-        }
-
+         
         public static EspecialidadGetDTO EntityToDto(Especialidad entity)
         {
             return new EspecialidadGetDTO { Id = entity.Id, Descripcion = entity.Descripcion, Nombre = entity.Nombre};  
@@ -38,10 +28,28 @@ namespace ProyectoClinica.Shared.DTOs.AOJEDA.EspecialidadDTOs
 
         public static Especialidad DtoToEntity(EspecialidadPostDTO post)
         {
-            return new Especialidad { Descripcion = post.Descripcion, Nombre = post.Nombre }; 
+            return new Especialidad { Descripcion = post.Descripcion.ToUpper(), Nombre = post.Nombre.ToUpper()   }; 
         }
 
     }
 
- 
+    public class EspecialidadPutDTO
+    {
+        public int Id { get; set; }
+        public string Nombre { get; set; }
+        public string Descripcion { get; set; }
+
+        public static Especialidad DtoToEntity(EspecialidadPutDTO dto , Especialidad ent)
+        {
+
+            ent.Id = dto.Id; 
+            ent.Nombre = dto.Nombre.ToUpper();
+            ent.Descripcion = dto.Descripcion.ToUpper();
+
+            return ent; 
+        }
+
+    }
+
+
 }

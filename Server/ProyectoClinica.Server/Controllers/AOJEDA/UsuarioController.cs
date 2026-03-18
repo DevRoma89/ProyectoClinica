@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ProyectoClinica.Shared.DTOs.AOJEDA.UsuarioDTOs;
+using ProyectoClinica.Shared.Entidades.AOJEDA;
+using ProyectoClinica.Shared.Entidades.EROMAN;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography.Xml;
@@ -161,6 +163,34 @@ namespace ProyectoClinica.Server.Controllers.AOJEDA
                     await userManager.AddClaimAsync(usuario, new Claim(ClaimTypes.Role, credencialesUsuarioDTO.Rol)); 
                 }
 
+            }
+
+            switch (credencialesUsuarioDTO.Rol)
+            {
+                case "Medico":
+
+                    var especialidad = await context.Especialidades.FirstOrDefaultAsync(x => x.Nombre == "SIN ASIGNAR");
+                    
+                    if (especialidad == null)
+                    {
+                        especialidad = new Especialidad(); 
+                        especialidad.Nombre = "SIN ASIGNAR";
+                        especialidad.Descripcion = "PENDIENTE";
+                        context.Especialidades.Add(especialidad);
+                        await context.SaveChangesAsync();
+                    }
+
+                    context.Medicos.Add(new Medico { EspecialidadId = especialidad.Id, Email = credencialesUsuarioDTO.Email.ToUpper() });
+                    await context.SaveChangesAsync();
+                    break;
+                case "Paciente":
+
+                    var paciente = new Paciente { Email = credencialesUsuarioDTO.Email.ToUpper() }; 
+                    context.Pacientes.Add(paciente);
+                    await context.SaveChangesAsync();
+                    context.HistoriaClinicas.Add(new HistoriaClinica { PacienteId =  paciente.Id});
+                    await context.SaveChangesAsync();
+                    break;
             }
 
             var respuestaAutentificacion = await ConstruirToken(credencialesUsuarioDTO);
