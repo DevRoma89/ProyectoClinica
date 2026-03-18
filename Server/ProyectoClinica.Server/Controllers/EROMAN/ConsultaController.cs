@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProyectoClinica.Shared.DTOs.EROMAN.ConsultaDTOs;
 using ProyectoClinica.Shared.Entidades.EROMAN;
+using System.Runtime.CompilerServices;
 
 namespace ProyectoClinica.Server.Controllers.EROMAN
 {
@@ -74,9 +75,11 @@ namespace ProyectoClinica.Server.Controllers.EROMAN
             {
                 return BadRequest("No puede agregar una consulta con observaciones vacias");
             }
+            
+            var consulta = ConsultaPostDTO.DtoToEntity(dto);
 
-            var consulta = ConsultaPostDTO.DtoToEntity(dto);    
-
+            var numeracion = await context.Consultas.Where(x => x.HistoriaClinicaId == dto.HistoriaClinicaId).CountAsync();
+            consulta.NumeroSecuencia = numeracion++;
             context.Add(consulta);
             await context.SaveChangesAsync();
 
