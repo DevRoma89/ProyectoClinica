@@ -27,7 +27,7 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if(!verifyFormData()) {
-      setError("Por favor, completa todos los campos.");
+      setError("Por favor, completa todos los campos requeridos.");
       return;
     }
 
@@ -85,7 +85,7 @@ const Login = () => {
                   d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
             </div>
-            <h1 className="text-2xl font-medium text-white">Bienvenido</h1>
+            <h1 className="text-2xl font-medium text-white">Bienvenido!</h1>
             <p className="text-slate-400 mt-1">Ingresa a tu cuenta</p>
           </div>
 
