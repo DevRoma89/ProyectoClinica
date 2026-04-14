@@ -15,7 +15,7 @@ namespace ProyectoClinica.Server.Controllers.JBRITEZ
         {
             this.context = context;
         }
-
+   
 
         [HttpGet]
         public async Task<ActionResult<List<TurnoGetDTO>>> GetAll()
@@ -129,6 +129,7 @@ namespace ProyectoClinica.Server.Controllers.JBRITEZ
 
             return Ok("Turno Actualizado Correctamente");
         }
+        //----
 
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete([FromRoute] int id)
