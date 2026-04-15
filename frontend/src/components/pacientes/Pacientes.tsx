@@ -156,7 +156,7 @@ const Pacientes = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div>
               <label className="block text-sm text-slate-400 mb-1">Nombre</label>
-              <input name="nombre" value={formData.nombre} onChange={handleChange} placeholder="Ej: Maria" className={inputClass} />
+              <input name="nombre" value={formData.nombre} onChange={handleChange} placeholder="Ej: Juan" className={inputClass} />
             </div>
             <div>
               <label className="block text-sm text-slate-400 mb-1">Apellido</label>
