@@ -19,4 +19,6 @@ export const ENDPOINTS = {
     HISTORIA_CLINICA: '/api/HistoriaClinica',
     ANTECEDENTE_MEDICO: '/api/AntecedenteMedico',
     ESTUDIO_MEDICO: '/api/EstudioMedico',
+    RECETA: '/api/Receta',
+    DETALLE_RECETA: '/api/DetalleReceta',
 } as const;

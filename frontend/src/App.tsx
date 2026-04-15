@@ -8,6 +8,7 @@ import Pacientes from './components/pacientes/Pacientes'
 import Turnos from './components/turnos/Turnos'
 import Consultas from './components/consultas/Consultas'
 import HistoriasClinicas from './components/historias-clinicas/HistoriasClinicas'
+import Recetas from './components/recetas/Recetas'
 import PrivateRoute from './components/routes/PrivateRoute'
 import PublicRoute from './components/routes/PublicRoute'
 import AdminRoute from './components/routes/AdminRoute'
@@ -24,6 +25,7 @@ const App = () => {
       <Route path="/turnos" element={<PrivateRoute><Turnos /></PrivateRoute>} />
       <Route path="/consultas" element={<PrivateRoute><Consultas /></PrivateRoute>} />
       <Route path="/historias-clinicas" element={<PrivateRoute><HistoriasClinicas /></PrivateRoute>} />
+      <Route path="/recetas" element={<PrivateRoute><Recetas /></PrivateRoute>} />
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   )
